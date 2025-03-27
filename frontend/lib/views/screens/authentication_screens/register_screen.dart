@@ -1,10 +1,10 @@
 
-import 'package:ecommerceflutter/views/screens/authentication_screens/register_screen.dart';
+import 'package:ecommerceflutter/views/screens/authentication_screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatelessWidget {
+  const RegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class LoginScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Login Your Account",
+                "Create Your Account",
                 style: GoogleFonts.getFont(
                   'Lato',
                   color: Color(0xFF0d120E),
@@ -76,6 +76,47 @@ class LoginScreen extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
+
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    'Full Name', 
+                    style: GoogleFonts.getFont(
+                    'Nunito Sans',
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.2
+                    )
+                    ),
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                    fillColor: Colors.white,
+                    filled: true,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(9)
+                    ),
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    labelText: 'enter your full name',
+                    labelStyle: GoogleFonts.getFont(
+                      "Nunito Sans",
+                      fontSize: 14,
+                      letterSpacing: 0.1,
+                      ),
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Image.asset(
+                        'assets/icons/user.jpeg',
+                        width: 20,
+                        height: 20,
+                        ),
+                    )
+                  ),
+                ),
+        
+                SizedBox(
+                  height: 20,
+                ),
+
                 Align(
                   alignment: Alignment.topLeft,
                   child: Text(
@@ -199,7 +240,7 @@ class LoginScreen extends StatelessWidget {
                           ),
                           )
                         ),
-                  Center(child: Text('Sign in', style: GoogleFonts.getFont(
+                  Center(child: Text('Sign Up', style: GoogleFonts.getFont(
                     'Lato',
                     color: Colors.white, 
                     fontSize: 18,
@@ -216,20 +257,21 @@ class LoginScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                  Text('Need an Account?', style: GoogleFonts.roboto(
+                  Text('Already have an Account?', style: GoogleFonts.roboto(
                     fontWeight: FontWeight.w500,
                     letterSpacing: 1
                       )
                     ),
                   InkWell(
                     onTap: () {
-                      Navigator.push(context, 
+                    Navigator.push(context, 
                     MaterialPageRoute(builder: (context){
-                      return RegisterScreen();
-                    }));
+                      return LoginScreen();
+                    })
+                    );
                     },
                     child: Text(
-                      'Sign Up',
+                      'Sign In',
                       style: GoogleFonts.getFont(
                         'Lato',
                         color: Color(0xFF103DE5),
