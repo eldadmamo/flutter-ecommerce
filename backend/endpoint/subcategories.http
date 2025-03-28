@@ -1,0 +1,30 @@
+@baseUrl = http://localhost:3000
+
+@urlPath = api
+
+###
+
+POST {{baseUrl}}/{{urlPath}}/subcategories
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "categoryId": "f67vytf76fi6g",
+  "categoryName": "computer",
+  "image": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.carguide.ph%2Fsearch%3Fupdated-max%3D2023-10-25T17%3A01%3A00-07%3A00%26max-results%3D28%26m%3D0&psig=AOvVaw1DuPAdHValb-5x3R8apXFt&ust=1743286997096000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCIj-kaLorYwDFQAAAAAdAAAAABAJ",
+  "subCategoryName": "shirt"
+}
+
+###
+GET {{baseUrl}}/{{urlPath}}/category/computer/subcategories
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+# {
+#   "categoryId": "f67vytf76fi6g",
+#   "categoryName": "computer",
+#   "image": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.carguide.ph%2Fsearch%3Fupdated-max%3D2023-10-25T17%3A01%3A00-07%3A00%26max-results%3D28%26m%3D0&psig=AOvVaw1DuPAdHValb-5x3R8apXFt&ust=1743286997096000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCIj-kaLorYwDFQAAAAAdAAAAABAJ",
+#   "subCategoryName": "shirt"
+# }

@@ -4,6 +4,7 @@ const cors = require('cors');
 const bannerRouter = require('./routes/banner')
 const authRouter = require('./routes/auth')
 const cateogryRouter = require('./routes/category')
+const subcategoryRouter = require('./routes/sub_category')
 
 const PORT = 3000;
 
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use(authRouter);
 app.use(bannerRouter);
 app.use(cateogryRouter);
+app.use(subcategoryRouter);
 
 const DB = "mongodb://127.0.0.1:27017/flutter"
 
