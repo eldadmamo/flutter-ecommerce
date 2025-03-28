@@ -24,6 +24,7 @@ class AuthController {
         city: '', 
         locality: '',
         password: password,
+        token: ''
         );
   http.Response response = await http.post(
     Uri.parse('$uri/api/signup'), 
@@ -40,6 +41,37 @@ class AuthController {
       });
     }catch(e){
       print("Error: $e");
+    }
+  }
+
+  Future<void> signInUsers({
+    required context, 
+    required String email, 
+    required String password
+    }) async {
+     String uri = dotenv.env['API_URI'] ?? 'http://default-value.com';
+    
+    try{
+     
+    http.Response response = await http.post(
+        Uri.parse('$uri/api/signin'),
+        body: jsonEncode({
+          'email': email,
+          'password': password
+           },
+          ),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          });
+      
+      manageHttpResponse(
+        response: response, 
+        context: context, 
+        onSuccess: () {
+        showSnackBar(context, 'Logged In');
+      });
+    }catch(e){
+      print("Error $e");
     }
   }
 }
