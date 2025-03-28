@@ -1,0 +1,24 @@
+@baseUrl = http://localhost:3000
+
+@urlPath = api
+
+###
+
+POST {{baseUrl}}/{{urlPath}}/categories
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "name": "Eldad",
+  "image": "https://www.lexus.co.nz/content/dam/lexus-v3-new-zealand/discover-lexus/future-concept-cars/lf-zc-concept.jpg",
+  "banner": "https://www.lexus.co.nz/content/dam/lexus-v3-new-zealand/discover-lexus/future-concept-cars/lf-zc-concept.jpg"
+}
+
+###
+
+GET {{baseUrl}}/{{urlPath}}/categories
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+

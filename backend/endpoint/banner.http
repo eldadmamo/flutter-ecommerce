@@ -1,0 +1,25 @@
+@baseUrl = http://localhost:3000
+
+@urlPath = api
+
+###
+
+POST {{baseUrl}}/{{urlPath}}/banner
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "image": "http://media.vogue.co.uk/photos/5d54628c65deb50008c9d93d/2:3/w_2560%2Cc_limit/original"
+}
+
+###
+
+GET {{baseUrl}}/{{urlPath}}/banners
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+# {
+#   "image": "http://media.vogue.co.uk/photos/5d54628c65deb50008c9d93d/2:3/w_2560%2Cc_limit/original"
+# }

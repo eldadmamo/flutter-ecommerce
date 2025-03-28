@@ -1,8 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-
+const bannerRouter = require('./routes/banner')
 const authRouter = require('./routes/auth')
+const cateogryRouter = require('./routes/category')
 
 const PORT = 3000;
 
@@ -10,6 +11,8 @@ const app = express();
 app.use(cors({ origin: '*', credentials: true }));
 app.use(express.json());
 app.use(authRouter);
+app.use(bannerRouter);
+app.use(cateogryRouter);
 
 const DB = "mongodb://127.0.0.1:27017/flutter"
 
