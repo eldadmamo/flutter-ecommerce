@@ -4,12 +4,37 @@ import 'package:ecommerceflutter/views/screens/authentication_screens/login_scre
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
+
+  @override
+  _RegisterScreenState createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final AuthController _authController = AuthController();
   late String email = '';
   late String fullName;
   late String password;
+  bool _isLoading = false;
+
+ registerUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+    await _authController.signUpUsers(
+        context: context, 
+        email: email, 
+        fullName: fullName,
+        password: password,
+    ).whenComplete((){
+      _formKey.currentState!.reset();
+      setState(() {
+        _isLoading = false;  
+      });
+    });
+  }
   
 
   @override
@@ -197,15 +222,9 @@ class RegisterScreen extends StatelessWidget {
                     SizedBox(height: 20), 
               
                     InkWell(
-                      onTap: () async {
+                      onTap: ()  {
                         if (_formKey.currentState!.validate()){
-                          print("Sign Up button pressed");
-                         await _authController.signUpUsers(
-                          context: context, 
-                          email: email, 
-                          fullName: fullName, 
-                          password: password
-                          );
+                         registerUser();
                         }
                       },
                       child: Container(
@@ -291,7 +310,11 @@ class RegisterScreen extends StatelessWidget {
                                 ),
                                 )
                               ),
-                        Center(child: Text('Sign Up', style: GoogleFonts.getFont(
+                        Center(
+                          child: _isLoading 
+                          ? const CircularProgressIndicator(
+                            color: Colors.white) :
+                             Text('Sign Up', style: GoogleFonts.getFont(
                           'Lato',
                           color: Colors.white, 
                           fontSize: 18,
@@ -316,11 +339,7 @@ class RegisterScreen extends StatelessWidget {
                         ),
                       InkWell(
                         onTap: () {
-                        Navigator.push(context, 
-                        MaterialPageRoute(builder: (context){
-                          return LoginScreen();
-                        })
-                        );
+                        
                         },
                         child: Text(
                           'Sign In',

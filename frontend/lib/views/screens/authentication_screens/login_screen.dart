@@ -4,11 +4,35 @@ import 'package:ecommerceflutter/views/screens/authentication_screens/register_s
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final AuthController _authController = AuthController();
   late String email;
   late String password; 
+  bool isLoading = false;
+
+  loginUser() async {
+    setState(() {
+      isLoading = true;
+    });
+    await _authController.signInUsers(
+        context: context, 
+        email: email, 
+        password: password,
+    ).whenComplete((){
+      _formKey.currentState!.reset();
+      setState(() {
+        isLoading = false;  
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,11 +170,9 @@ class LoginScreen extends StatelessWidget {
                     InkWell(
                       onTap: () async {
                         if (_formKey.currentState!.validate()){
-                        await _authController.signInUsers(
-                          context: context, 
-                          email: email, 
-                          password: password
-                          );
+                        loginUser();
+                        } else {
+
                         }
                       },
                       child: Container(
@@ -236,7 +258,12 @@ class LoginScreen extends StatelessWidget {
                                 ),
                                 )
                               ),
-                        Center(child: Text('Sign in', style: GoogleFonts.getFont(
+                        Center(
+                          child: isLoading ? const CircularProgressIndicator(
+                            color: Colors.white, 
+                          ): Text(
+                            'Sign in', 
+                            style: GoogleFonts.getFont(
                           'Lato',
                           color: Colors.white, 
                           fontSize: 18,

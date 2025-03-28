@@ -1,4 +1,5 @@
 import 'package:ecommerceflutter/views/screens/authentication_screens/login_screen.dart';
+import 'package:ecommerceflutter/views/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -40,7 +41,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true
       ),
-      home: LoginScreen()
+      home: MainScreen()
     );
   }
 }
