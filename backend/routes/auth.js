@@ -33,7 +33,7 @@ authRouter.post('/api/signin', async (req,res) => {
         const {email, password} = req.body;
         const findUser = await User.findOne({email});
         if(!findUser){
-            return res.send(400).json({msg: "user not Found with this email"});
+            return res.status(400).json({msg: "user not Found with this email"});
         } else {
            const isMatch = await bcrypt.compare(password,findUser.password);
            if(!isMatch){
@@ -44,6 +44,7 @@ authRouter.post('/api/signin', async (req,res) => {
              //remove sensitive information
              const {password, ...userWithoutPassword} = findUser._doc; 
 
+             
              res.json({token, ...userWithoutPassword })
            }
         }
