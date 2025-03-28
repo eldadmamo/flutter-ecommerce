@@ -1,0 +1,29 @@
+@baseUrl = http://localhost:3000
+
+@urlPath = api
+
+###
+
+POST {{baseUrl}}/{{urlPath}}/signup
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "fullName":"eldad",
+  "email": "eldadf456@gmail.com" ,
+  "password":"12345678"
+}
+
+
+###
+
+POST {{baseUrl}}/{{urlPath}}/signin
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "email": "eldadf456@gmail.com" ,
+  "password":"12345678"
+}
