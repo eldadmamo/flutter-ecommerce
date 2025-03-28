@@ -7,7 +7,7 @@ void main() async {
   await dotenv.load(); // Load the .env file
 
   String uri = dotenv.env['API_URI'] ?? "http://default-value.com";
-  print("API URI: $uri"); // Debugging output
+  
   runApp(const MyApp());
   
 }
