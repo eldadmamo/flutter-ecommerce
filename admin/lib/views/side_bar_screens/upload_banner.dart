@@ -1,4 +1,5 @@
 import 'package:admin/controllers/banner_controller.dart';
+import 'package:admin/views/side_bar_screens/widgets/banner_widget.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -75,8 +76,12 @@ class _UploadBannerState extends State<UploadBanner> {
           child: ElevatedButton(onPressed: (){
             pickImage();
           }, child: Text('Pick Image')),
-        )
-      ],
+        ),
+        Divider(
+          color: Colors.grey, 
+        ),
+        BannerWidget()
+      ], 
     );
   }
 }
