@@ -1,0 +1,45 @@
+import 'package:admin/global_variable.dart';
+import 'package:admin/models/banner.dart';
+import 'package:admin/services/manage_http_response.dart';
+import 'package:admin/views/side_bar_screens/upload_banner.dart';
+import 'package:cloudinary_public/cloudinary_public.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
+
+class BannerController{
+  UploadBanner({
+    required dynamic pickedImage,
+    required context 
+    }) async{ 
+      try{
+        
+        final cloudinary = CloudinaryPublic(
+          cloud,
+          upload
+        );
+
+       CloudinaryResponse imageResponse =  await cloudinary.uploadFile(
+          CloudinaryFile.fromBytesData(pickedImage, identifier: 'pickedImage', folder: 'banners')
+        );
+
+        String image = imageResponse.secureUrl;
+
+
+        BannerModel bannerModel = BannerModel(id: '', image: image);
+
+        http.Response response = await http.post(Uri.parse("$uri/api/banner"), 
+        body: bannerModel.toJson(),
+        headers: <String, String> {
+          "Content-Type": 'application/json; charset=UTF-8'
+        },
+        
+        );
+        manageHttpResponse(response: response, context: context, onSuccess: (){
+          showSnackBar(context, 'Banner Upload');
+        });
+      }catch(e){
+        print('error: $e');
+      }
+  }
+}
