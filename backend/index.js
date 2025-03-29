@@ -22,7 +22,7 @@ app.use(productReviewRouter);
  
 const DB = "mongodb://127.0.0.1:27017/flutter"
 
-mongoose.connect(DB).then(() => {
+mongoose.connect(DB).then(() => { 
     console.log('Mongodb Connected')
 })
 

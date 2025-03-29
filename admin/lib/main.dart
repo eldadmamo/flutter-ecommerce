@@ -1,7 +1,13 @@
 import 'package:admin/views/main_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async {
+   WidgetsFlutterBinding.ensureInitialized(); // Ensure Flutter bindings are initialized
+  await dotenv.load(); // Load the .env file
+
+  String uri = dotenv.env['API_URI'] ?? "http://default-value.com";
+  
   runApp(const MyApp());
 }
 

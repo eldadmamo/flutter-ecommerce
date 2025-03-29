@@ -1,3 +1,4 @@
+import 'package:admin/controllers/category_controller.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +12,7 @@ class CategoryScreen extends StatefulWidget {
 
 class _CategoryScreenState extends State<CategoryScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final CategoryController _categoryController = CategoryController();
   late String categoryName;
   dynamic _bannerImage;
   dynamic _image;
@@ -39,6 +41,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
       });
     }
    } 
+
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +118,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 ),
                 onPressed: (){
                   if (_formKey.currentState!.validate()){
-                     print(categoryName); 
+                      _categoryController.uploadCategory(
+                        pickedImage: _image, 
+                        pickedBanner: _bannerImage,
+                        name: categoryName,
+                        context: context 
+                    );
                   }
                 }, child: Text(
                 'Save',
