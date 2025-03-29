@@ -1,0 +1,27 @@
+@baseUrl = http://localhost:3000
+
+@urlPath = api
+
+###
+
+POST {{baseUrl}}/{{urlPath}}/product-review
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "buyerId": "john wick", 
+  "email": "eldadfikre456@gmail.com", 
+  "fullName": "eldad", 
+  "productId": "567890987", 
+  "rating": 10, 
+  "review": "wow what an amazing product. please purchase it"
+}
+
+###
+
+GET {{baseUrl}}/{{urlPath}}/reviews
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
