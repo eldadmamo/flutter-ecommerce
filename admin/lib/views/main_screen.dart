@@ -2,6 +2,7 @@ import 'package:admin/views/side_bar_screens/buyers_screen.dart';
 import 'package:admin/views/side_bar_screens/category_screen.dart';
 import 'package:admin/views/side_bar_screens/orders_screen.dart';
 import 'package:admin/views/side_bar_screens/product_screen.dart';
+import 'package:admin/views/side_bar_screens/subcategory_screen.dart';
 import 'package:admin/views/side_bar_screens/upload_banner.dart';
 import 'package:admin/views/side_bar_screens/vendors_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,31 +30,35 @@ class _MainScreenState extends State<MainScreen> {
 
     case VendorsScreen.id:
        setState(() {
-         _selectedScreen = VendorsScreen();
+         _selectedScreen = const VendorsScreen();
        });
        break;
     
     case OrdersScreen.id:
        setState(() {
-         _selectedScreen = OrdersScreen();
+         _selectedScreen = const OrdersScreen();
        });
        break;
     
     case CategoryScreen.id:
       setState(() {
-        _selectedScreen = CategoryScreen();
+        _selectedScreen = const CategoryScreen();
       });
       break;
-
+    
+    case SubcategoryScreen.id:
+    setState(() {
+      _selectedScreen = const SubcategoryScreen();
+    });
     case UploadBanner.id:
        setState(() {
-         _selectedScreen = UploadBanner();
+         _selectedScreen = const UploadBanner();
        });
        break;
     
     case ProductScreen.id:
        setState(() {
-         _selectedScreen = ProductScreen();
+         _selectedScreen = const ProductScreen();
        });
     }  
 
@@ -86,6 +91,7 @@ class _MainScreenState extends State<MainScreen> {
           AdminMenuItem(title: 'Buyers', route: BuyersScreen.id, icon: CupertinoIcons.person),
           AdminMenuItem(title: 'Orders', route: OrdersScreen.id, icon: CupertinoIcons.shopping_cart),
           AdminMenuItem(title: 'Categories', route: CategoryScreen.id, icon: Icons.category),
+          AdminMenuItem(title: 'Subcategories', route: SubcategoryScreen.id, icon: Icons.category_outlined),
           AdminMenuItem(title: 'Upload Banners', route: UploadBanner.id, icon: Icons.upload),
           AdminMenuItem(title: 'Products', route: ProductScreen.id, icon: Icons.store),
         ], 
