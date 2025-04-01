@@ -27,7 +27,7 @@ withCredentials: true
 # }
 
 ###
-GET {{baseUrl}}/{{urlPath}}/category/computer/subcategories
+GET {{baseUrl}}/{{urlPath}}/category/fashion/subcategories
 Content-Type: application/json
 Accept: application/json
 withCredentials: true

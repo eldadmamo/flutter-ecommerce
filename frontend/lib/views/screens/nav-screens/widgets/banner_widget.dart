@@ -32,7 +32,7 @@ class _BannerWidgetState extends State<BannerWidget> {
         child: FutureBuilder(future: futureBanners,
       builder: (context, snapshot) {
         if (snapshot.connectionState==ConnectionState.waiting){
-          return CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError)  {
           return Center(child: Text("Error : ${snapshot.error}")
           );
