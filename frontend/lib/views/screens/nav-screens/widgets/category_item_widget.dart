@@ -1,5 +1,6 @@
 import 'package:ecommerceflutter/controllers/category_controller.dart';
 import 'package:ecommerceflutter/models/category.dart';
+import 'package:ecommerceflutter/views/screens/detail/screens/inner_category_screen.dart';
 import 'package:ecommerceflutter/views/screens/nav-screens/widgets/reusable_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,7 +26,8 @@ class _CategoryItemWidgetState extends State<CategoryItemWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ReusableTextWidget(title: 'Categories', subtitle: 'View All'),
-        FutureBuilder(future: futureCategories,
+        FutureBuilder(
+        future: futureCategories,
          builder: (context, snapshot){
           if(snapshot.connectionState == ConnectionState.waiting){
             return const Center(
@@ -36,7 +38,7 @@ class _CategoryItemWidgetState extends State<CategoryItemWidget> {
               child :Text('Error ${snapshot.error}')
             );
           } else if(!snapshot.hasData || snapshot.data!.isEmpty){
-            return const  Center(child: Text('No Categories'));
+            return const Center(child: Text('No Categories'));
           } else {
           final categories = snapshot.data!;
           return GridView.builder(
@@ -50,14 +52,21 @@ class _CategoryItemWidgetState extends State<CategoryItemWidget> {
             ),
             itemBuilder: (context, index){
               final category = categories[index];
-              return Column(
-                children: [
-                  Image.network(category.image, height: 47, width: 47),
-                  Text(category.name, style: GoogleFonts.quicksand(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16
-                  ),)
-                ],
+              return InkWell(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context){
+                    return InnerCategoryScreen(category: category); 
+                  }));
+                },
+                child: Column(
+                  children: [
+                    Image.network(category.image, height: 47, width: 47),
+                    Text(category.name, style: GoogleFonts.quicksand(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16
+                    ),)
+                  ],
+                ),
               );
             },
             );
