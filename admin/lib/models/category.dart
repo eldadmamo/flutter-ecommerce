@@ -23,7 +23,7 @@ class Categorys {
 
   factory Categorys.fromJson(Map<String, dynamic> map) {
     return Categorys(
-      id: map['id'] as String? ?? "",
+      id: map['_id'] as String? ?? "",
       name: map['name'] as String? ?? "",
       image: map['image'] as String? ?? "",
       banner: map['banner'] as String? ?? "",

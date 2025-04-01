@@ -24,12 +24,12 @@ class Subcategory {
 
   factory Subcategory.fromJson(Map<String, dynamic> map) {
     return Subcategory(
-      id: map['_id'] as String,
+      id: map['_id'] as String? ?? "",
       categoryId: map['categoryId'] as String? ?? "",
       categoryName: map['categoryName'] as String? ?? "",
       image: map['image'] as String? ?? "",
       subCategoryName: map['subCategoryName'] as String? ?? "",
     );
-  }
+  } 
 
 }

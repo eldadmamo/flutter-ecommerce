@@ -14,7 +14,10 @@ class CategoryController {
     required context 
     }) async{
     try{
-      final cloudinary = CloudinaryPublic("dggixttgq", "ml_default");
+      final cloudinary = CloudinaryPublic(
+        cloud,
+        upload
+        );
 
     CloudinaryResponse ImageResponse =  await cloudinary.uploadFile(
         CloudinaryFile.fromBytesData(pickedImage, 
@@ -35,7 +38,8 @@ class CategoryController {
       image: image, 
       banner: banner
       );
-     http.Response response = await http.post(Uri.parse("$uri/api/categories"),
+     http.Response response = await http.post(
+      Uri.parse("$uri/api/categories"),
       body: category.toJson(),
       headers: <String, String>{
         "Content-Type": "application/json; charset=UTF-8"
@@ -54,7 +58,8 @@ class CategoryController {
   Future<List<Categorys>> loadCategories() async{
     try{
 
-     http.Response response = await http.get(Uri.parse('$uri/api/categories'),
+     http.Response response = await http.get(
+      Uri.parse('$uri/api/categories'),
      headers: <String, String>{
       "Content-Type": 'application/json; charset=UTF-8'
      });
