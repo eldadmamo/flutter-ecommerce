@@ -1,6 +1,7 @@
 
 
 import 'package:ecommerceflutter/views/screens/nav-screens/widgets/banner_widget.dart';
+import 'package:ecommerceflutter/views/screens/nav-screens/widgets/category_item_widget.dart';
 import 'package:ecommerceflutter/views/screens/nav-screens/widgets/header-widget.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,8 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           children: [
             HeaderWidget(),
-            BannerWidget()
+            BannerWidget(),
+            CategoryItemWidget()
           ],
         ),
       ),
