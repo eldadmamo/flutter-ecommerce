@@ -40,7 +40,7 @@ class _InnerCategoryContentWidgetState extends State<InnerCategoryContentWidget>
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 20), 
         child: const InnerHeaderWidget()
-      ),
+      ), 
       body: SingleChildScrollView(
         child: Column(
           children: [
