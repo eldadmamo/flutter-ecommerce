@@ -44,4 +44,7 @@ class Vendor {
     );
   }
 
+  factory Vendor.fromJson(String source) =>
+      Vendor.fromMap(json.decode(source) as Map<String, dynamic>);
+
 }
