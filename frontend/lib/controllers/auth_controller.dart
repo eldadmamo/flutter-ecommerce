@@ -96,13 +96,38 @@ class AuthController {
            // store the data in sharedPreferences
            await preferences.setString('user', userJson);
 
-          Navigator.pushAndRemoveUntil(context, 
+          Navigator.pushAndRemoveUntil(
+          context, 
           MaterialPageRoute(builder: (context) =>  MainScreen()), 
           (route) => false);
         showSnackBar(context, 'Logged In');
       });
     }catch(e){
       print("Error $e");
+    }
+  }
+
+  //Signout
+  Future<void> signoutUser({required context}) async{
+    try{
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      //clear token and user sharedPreferences
+      await preferences.remove('auth_token');
+      await preferences.remove('user');
+      //clear the user state
+      providerContainer.read(userProvider.notifier).signOut();
+      // navigate the user back to the logined
+
+      Navigator.pushAndRemoveUntil(
+      context, 
+      MaterialPageRoute(builder: (context){
+        return LoginScreen();
+      }), 
+      (route) => false);
+
+      showSnackBar(context, 'signout Successfully');
+    }catch(e){
+      showSnackBar(context, 'error signing out');
     }
   }
 }
