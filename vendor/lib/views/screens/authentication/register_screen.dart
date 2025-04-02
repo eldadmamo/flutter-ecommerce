@@ -1,8 +1,7 @@
-
-import 'package:ecommerceflutter/controllers/auth_controller.dart';
-import 'package:ecommerceflutter/views/screens/authentication_screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vendor/controllers/vendor_auth_controller.dart';
+import 'package:vendor/views/screens/authentication/login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -13,7 +12,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final AuthController _authController = AuthController();
+  final VendorAuthController _vendorAuthController = VendorAuthController();
   late String email = '';
   late String fullName;
   late String password;
@@ -23,7 +22,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() {
       _isLoading = true;
     });
-    await _authController.signUpUsers(
+    await _vendorAuthController.signUpVendor(
         context: context, 
         email: email, 
         fullName: fullName,
@@ -344,7 +343,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return const LoginScreen();
                          })
                          );
-                        }, 
+                        },
                         child: Text(
                           'Sign In',
                           style: GoogleFonts.getFont(
