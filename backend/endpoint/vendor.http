@@ -1,0 +1,29 @@
+@baseUrl = http://localhost:3000
+
+@urlPath = api
+
+###
+
+POST {{baseUrl}}/{{urlPath}}/vendor/signup
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "fullName":"abenezer",
+  "email": "abenezer456@gmail.com" ,
+  "password":"123456"
+}
+
+
+###
+
+POST {{baseUrl}}/{{urlPath}}/vendor/signin
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "email": "abenezer456@gmail.com" ,
+  "password":"123456"
+}

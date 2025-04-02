@@ -7,7 +7,7 @@ const cateogryRouter = require('./routes/category')
 const subcategoryRouter = require('./routes/sub_category')
 const productRouter = require('./routes/product')
 const productReviewRouter =require('./routes/product_review')
-
+const vendorRouter = require('./routes/vendor')
 const PORT = 3000;
 
 const app = express();
@@ -19,6 +19,7 @@ app.use(cateogryRouter);
 app.use(subcategoryRouter);
 app.use(productRouter);
 app.use(productReviewRouter);
+app.use(vendorRouter);
  
 const DB = "mongodb://127.0.0.1:27017/flutter"
 
