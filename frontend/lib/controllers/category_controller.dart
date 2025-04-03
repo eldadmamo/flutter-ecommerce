@@ -1,8 +1,6 @@
 import 'dart:convert';
-
 import 'package:ecommerceflutter/global_variables.dart';
 import 'package:ecommerceflutter/models/category.dart';
-import 'package:ecommerceflutter/services/manage_http_response.dart';
 import 'package:http/http.dart' as http;
 
 class CategoryController {

@@ -15,9 +15,6 @@ class Product {
 
   Product({required this.id, required this.productName, required this.productPrice, required this.quantity, required this.description, required this.category, required this.vendorId, required this.fullName, required this.subCategory, required this.images});
 
-
-
-
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
@@ -33,7 +30,9 @@ class Product {
     };
   }
 
-  factory Product.fromMap(Map<String, dynamic> map) {
+  String toJson() => json.encode(toMap());
+
+  factory Product.fromJson(Map<String, dynamic> map) {
     return Product(
       id: map['_id'] as String? ?? "",
       productName: map['productName'] as String? ?? "",
@@ -44,11 +43,8 @@ class Product {
       vendorId: map['vendorId'] as String? ?? "",
       fullName: map['fullName'] as String? ?? "",
       subCategory: map['subCategory'] as String? ?? "",
-      images: List<String>.from((map['images'] as List<String>),
+      images: List<String>.from((map['images'] as List<String>)
     ));
   }
 
-  String toJson() => json.encode(toMap());
-
-  factory Product.fromJson(String source) => Product.fromMap(json.decode(source) as Map<String, dynamic>);
 }

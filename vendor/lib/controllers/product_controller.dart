@@ -21,7 +21,7 @@ class ProductController {
     required context,
   })async{
    if (pickedImages!=null){
-     final cloudinary = CloudinaryPublic(cloud, upload);
+     final cloudinary = CloudinaryPublic("dggixttgq", "flutter");
 
      List<String> images = [];
 
