@@ -41,4 +41,19 @@ productRouter.get('/api/recommended-products', async (req, res) => {
         res.status(500).json({error: e.message});
     }
 })
+
+// new router for retriving products by category 
+productRouter.get('/api/products-by-category/:category', async(req, res) => {
+    try{
+        const {category} = req.params;
+        const products = await Product.find({category});
+        if(!products || products.length==0){
+            return res.status(404).json({msg: "Product not found"})
+        } else {
+            return res.status(200).json(products)
+        }
+    }catch(e){
+        res.status(500).json({error: e.message});
+    }
+})
 module.exports = productRouter;
