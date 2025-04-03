@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:vendor/models/product.dart';
@@ -21,7 +19,11 @@ class ProductController {
     required context,
   })async{
    if (pickedImages!=null){
-     final cloudinary = CloudinaryPublic("dggixttgq", "flutter");
+     final cloudinary = CloudinaryPublic(
+      cloud,
+      upload
+      );
+      
 
      List<String> images = [];
 

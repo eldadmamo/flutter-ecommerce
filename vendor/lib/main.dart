@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vendor/provider/vendor_provider.dart';
 import 'package:vendor/views/screens/authentication/login_screen.dart';
-import 'package:vendor/views/screens/authentication/register_screen.dart';
 import 'package:vendor/views/screens/main_vendor_screen.dart';
 
 
@@ -13,6 +12,10 @@ void main() async{
   await dotenv.load(); // Load the .env file
 
   String uri = dotenv.env['API_URI'] ?? "http://default-value.com";
+  String cloud = dotenv.env['CLOUDINARY_CLOUD_NAME'] ?? "http://default-value.com";
+
+  String upload = dotenv.env['CLOUDINARY_UPLOAD_PRESET'] ?? "http://default-value.com";
+
   runApp(const ProviderScope(child:  MyApp()));
 }
 
