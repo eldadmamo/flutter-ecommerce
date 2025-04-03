@@ -3,6 +3,8 @@
 import 'package:ecommerceflutter/views/screens/nav-screens/widgets/banner_widget.dart';
 import 'package:ecommerceflutter/views/screens/nav-screens/widgets/category_item_widget.dart';
 import 'package:ecommerceflutter/views/screens/nav-screens/widgets/header-widget.dart';
+import 'package:ecommerceflutter/views/screens/nav-screens/widgets/popular_product_widget.dart';
+import 'package:ecommerceflutter/views/screens/nav-screens/widgets/reusable_text_widget.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -16,7 +18,9 @@ class HomeScreen extends StatelessWidget {
           children: [
             HeaderWidget(),
             BannerWidget(),
-            CategoryItemWidget()
+            CategoryItemWidget(),
+            ReusableTextWidget(title: 'Popular Products', subtitle: 'View All'),
+            PopularProductWidget()
           ],
         ),
       ),
