@@ -13,7 +13,7 @@ void main() async{
   await dotenv.load(); // Load the .env file
 
   String uri = dotenv.env['API_URI'] ?? "http://default-value.com";
-  runApp(ProviderScope(child: const MyApp()));
+  runApp(const ProviderScope(child:  MyApp()));
 }
 
 class MyApp extends ConsumerWidget {
