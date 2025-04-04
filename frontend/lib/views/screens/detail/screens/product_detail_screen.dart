@@ -18,7 +18,10 @@ class ProductDetailScreen extends ConsumerStatefulWidget {
 class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
-    final _cartProvider = ref.read(cartProvider.notifier);
+    final cartProviderData = ref.read(cartProvider.notifier);
+    final cartData = ref.watch(cartProvider);
+    final isInCart = cartData.containsKey(widget.product.id);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -159,8 +162,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       bottomSheet: Padding(
         padding: EdgeInsets.all(8), 
         child: InkWell(
-          onTap: (){
-            _cartProvider.addProductToCart(
+          onTap: isInCart? null: (){
+            cartProviderData.addProductToCart(
               productName: widget.product.productName, 
               productPrice: widget.product.productPrice, 
               category: widget.product.category, 
@@ -179,7 +182,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
             height: 46, 
             clipBehavior: Clip.hardEdge,
             decoration: BoxDecoration(
-              color: const Color(0XFF3B54EE),
+              color:  isInCart? Colors.grey: const Color(0XFF3B54EE),
               borderRadius: BorderRadius.circular(15)
             ),
             child: Center(
