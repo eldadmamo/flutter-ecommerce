@@ -1,6 +1,8 @@
+import 'package:ecommerceflutter/global_variables.dart';
 import 'package:ecommerceflutter/models/user.dart';
 import 'package:ecommerceflutter/provider/user_provider.dart';
 import 'package:ecommerceflutter/services/manage_http_response.dart';
+import 'package:ecommerceflutter/views/screens/detail/screens/checkout_screen.dart';
 import 'package:ecommerceflutter/views/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -128,6 +130,50 @@ class AuthController {
       showSnackBar(context, 'signout Successfully');
     }catch(e){
       showSnackBar(context, 'error signing out');
+    }
+  }
+
+  Future<void> updateUserLocation({
+    required context,
+    required String id, 
+    required String state,
+    required String city,
+    required String locality,
+  }) async {
+    try{
+      final http.Response response =  await http.put(Uri.parse('$uri/api/users/$id'), 
+      body: jsonEncode({
+        'state':state,
+        'city': city,
+        'locality': locality 
+      }),
+      headers: <String, String>{
+        "Content-Type" : "application/json; charset=UTF-8"
+      });
+
+      print(response.body);
+
+      manageHttpResponse(response: response, context: context, 
+      onSuccess: () async{
+        final updateUser = jsonDecode(response.body);
+        // Access Shared preferences for local data storage
+        // shared preferences allow us to store data persistently on the device
+        SharedPreferences preferences = await SharedPreferences.getInstance();  
+
+        final userJson = jsonEncode(updateUser);
+
+        providerContainer.read(userProvider.notifier).setUser(userJson);
+
+        await preferences.setString('user', userJson);
+
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context){
+          return CheckoutScreen();
+        }), (route) => false);
+        showSnackBar(context, 'Logged in');
+      });
+
+    }catch(e){
+      showSnackBar(context, 'Error updating location');
     }
   }
 }

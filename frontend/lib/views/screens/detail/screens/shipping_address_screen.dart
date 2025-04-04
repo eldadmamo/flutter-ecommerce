@@ -1,17 +1,53 @@
+import 'package:ecommerceflutter/controllers/auth_controller.dart';
+import 'package:ecommerceflutter/provider/user_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ShippingAddressScreen extends StatefulWidget {
+class ShippingAddressScreen extends ConsumerStatefulWidget {
   const ShippingAddressScreen({super.key});
-
   @override
-  State<ShippingAddressScreen> createState() => _ShippingAddressScreenState();
+  _ShippingAddressScreenState createState() => _ShippingAddressScreenState();
 }
 
-class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
+class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); 
+  final AuthController _authController = AuthController();
+  late String state;
+  late String city;
+  late String locality;
+
+  //show Loading Dialog
+  _showLoadingDialog(){
+    showDialog(
+      context: context, 
+      builder: (context){
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15)
+        ),
+        child: Padding(padding: EdgeInsets.all(15), 
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const CircularProgressIndicator(),
+            const SizedBox(width: 20,), 
+            Text('Updating...', style: GoogleFonts.montserrat(
+              fontSize: 18, 
+              fontWeight: FontWeight.bold
+            ),) 
+          ],
+          ),
+        ),
+        
+      );
+    });
+  }
+
    @override
   Widget build(BuildContext context) {
+    final user = ref.read(userProvider);
+    final updateUser = ref.read(userProvider.notifier);
     return Scaffold(
       backgroundColor: Colors.white.withOpacity(0.96), 
       appBar: AppBar(
@@ -41,6 +77,9 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
                   ), 
                 ), 
                 TextFormField(
+                  onChanged: (value){
+                    state = value;
+                  },
                   validator: (value){
                     if(value!.isEmpty){
                       return "please enter state";
@@ -54,6 +93,9 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
                 ),
                 const SizedBox(height: 10,),
                 TextFormField(
+                  onChanged: (value){
+                    city = value;
+                  },
                   validator: (value){
                     if(value!.isEmpty){
                       return "please enter city";
@@ -65,8 +107,11 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
                     labelText: 'City', 
                   ),
                 ),
-                const SizedBox(height: 10,),
+                const SizedBox(height: 10),
                 TextFormField(
+                  onChanged: (value){
+                    locality = value;
+                  },
                   validator: (value){
                     if(value!.isEmpty){
                       return "please enter locality";
@@ -86,9 +131,21 @@ class _ShippingAddressScreenState extends State<ShippingAddressScreen> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(8.0),
         child: InkWell(
-          onTap: (){
+          onTap: ()async{
             if(_formKey.currentState!.validate()){
-              print('Valid');
+              _showLoadingDialog();
+              
+              await _authController.updateUserLocation(
+                context: context, 
+                id: user!.id, 
+                state: state, 
+                city: city, 
+                locality: locality
+               ).whenComplete((){
+                updateUser.recreateUserState(state: state, city: city, locality: locality);
+                Navigator.pop(context);
+                Navigator.pop(context);
+               });
             } else {
               print('not valid');
             }

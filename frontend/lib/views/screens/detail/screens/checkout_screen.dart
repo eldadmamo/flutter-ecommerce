@@ -21,6 +21,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   Widget build(BuildContext context) {
     final cartData = ref.read(cartProvider);
     final _cartProvider = ref.read(cartProvider.notifier);
+    final user = ref.watch(userProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Checkout'),
@@ -86,7 +87,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                                         child: SizedBox(
                                           width: 114,
                                           child: Text(
-                                            'Add Adress',
+                                            'Add Address',
                                             style: TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold,
@@ -100,18 +101,33 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                                       ),
                                       Align(
                                         alignment: Alignment.centerLeft,
-                                        child: Text(
+                                        child: user!.state.isNotEmpty ? Text(
+                                          user.state, 
+                                          style: GoogleFonts.lato(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            letterSpacing: 1.3,
+                                          ),
+                                        ): 
+                                        Text(
                                           'United state',
                                           style: GoogleFonts.lato(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
                                             letterSpacing: 1.3,
                                           ),
-                                        ),
+                                        )
                                       ),
                                       Align(
                                         alignment: Alignment.centerLeft,
-                                        child: Text(
+                                        child: user.city.isNotEmpty ? Text(
+                                          user.city, 
+                                          style: GoogleFonts.lato(
+                                            color: const Color(0xFF7F808C),
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 12,
+                                          ),
+                                        ): Text(
                                           'Enter city',
                                           style: GoogleFonts.lato(
                                             color: const Color(0xFF7F808C),
@@ -306,7 +322,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                 ),
               ),
               RadioListTile<String>(
-                title: Text('Stripe', 
+                title: Text(
+                'Stripe', 
                 style: GoogleFonts.montserrat(
                   fontWeight: FontWeight.bold,
                   fontSize: 18
@@ -324,7 +341,6 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                 title: Text('Cash On Delivery',
                 style: GoogleFonts.montserrat( 
                   fontWeight: FontWeight.bold, 
-
                 ),
                 ),
                 value: 'cashOnDelivery', 
@@ -341,7 +357,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ref.read(userProvider)!.state == ""? 
+        child: user.state.isEmpty ? 
         TextButton(
           onPressed: (){
             Navigator.push(context, MaterialPageRoute(builder: (context){
@@ -367,9 +383,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   id: '', 
                   fullName: ref.read(userProvider)!.fullName, 
                   email: ref.read(userProvider)!.email, 
-                  state: "Ethiopia",
-                  city: "addis Ababa", 
-                  locality: 'ET', 
+                  state: ref.read(userProvider)!.state,
+                  city: ref.read(userProvider)!.city, 
+                  locality: ref.read(userProvider)!.locality, 
                   productName: item.productName, 
                   productPrice: item.productPrice, 
                   quantity: item.quantity, 
