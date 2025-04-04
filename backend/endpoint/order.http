@@ -24,4 +24,14 @@ withCredentials: true
   "vendorId": "fff"
 }
 
+###
+GET {{baseUrl}}/{{urlPath}}/orders/67e6dea3eb2611a2eba5944a
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+
+
+
+
 
