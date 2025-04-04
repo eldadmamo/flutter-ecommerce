@@ -27,3 +27,18 @@ withCredentials: true
   "email": "eldadf456@gmail.com" ,
   "password":"12345678"
 }
+
+
+###
+
+PUT {{baseUrl}}/{{urlPath}}/users/67e6dea3eb2611a2eba5944a
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "state": "Ethiopia",
+  "city": "Addis Ababa",
+  "locality":"ET"
+}
+
