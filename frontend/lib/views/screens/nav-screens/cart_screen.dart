@@ -1,4 +1,5 @@
 import 'package:ecommerceflutter/provider/cart_provider.dart';
+import 'package:ecommerceflutter/views/screens/detail/screens/checkout_screen.dart';
 import 'package:ecommerceflutter/views/screens/main_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -304,7 +305,11 @@ class _CartScreenState extends ConsumerState<CartScreen> {
               Align(
                 alignment: Alignment(0.83, -1),
                 child: InkWell(
-                  onTap: (){},
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context){
+                      return CheckoutScreen();
+                    }));
+                  },
                   child: Container(
                     width: 166, 
                     height: 71, 
