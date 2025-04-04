@@ -1,0 +1,27 @@
+@baseUrl = http://localhost:3000
+
+@urlPath = api 
+
+###
+
+POST {{baseUrl}}/{{urlPath}}/orders
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "fullName": "Eldad Mamo",
+  "email": "eldadfikre456@gmail.com",
+  "state": "ethiopia",
+  "city": "addis ababa",
+  "locality": "ET",
+  "productName": "Gucci Oversize",
+  "productPrice": 400,
+  "quantity": 4,
+  "category": "Fashion",
+  "image": "https://res.cloudinary.com/dggixttgq/image/upload/v1742852841/rpbikog50ky0omzbs0cw",
+  "buyerId": "ff",
+  "vendorId": "fff"
+}
+
+
