@@ -30,6 +30,15 @@ Content-Type: application/json
 Accept: application/json
 withCredentials: true
 
+
+###
+GET {{baseUrl}}/{{urlPath}}/orders/vendors/67ed4744d0980f67457547b4
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+
+
 ###
 DELETE {{baseUrl}}/{{urlPath}}/orders/67f0128c151d580ba37c4b77
 Content-Type: application/json

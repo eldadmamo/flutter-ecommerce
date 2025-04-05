@@ -54,6 +54,25 @@ orderRouter.delete("/api/orders/:id", async (req,res) => {
     }
 })
 
+
+orderRouter.get('/api/orders/vendors/:vendorId', async (req, res) => {
+    try{
+        //extract the buyer from request paramerts
+        const {vendorId} =req.params;
+        const orders = await Order.find({vendorId});
+
+        if(orders===0){
+            return res.status(404).json({msg: "No Orders found for this vendor"});
+        }
+        //If orders are found, return them with a 200 status code
+        return res.status(200).json(orders);
+    }catch(error){
+        //Handle any errors that occure during the order retrieval process
+        res.status(500).json({error: e.message});
+    }
+})
+
+
 module.exports = orderRouter;
 
 
