@@ -1,12 +1,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vendor/controllers/order_controller.dart';
 import 'package:vendor/models/orders.dart';
 
 class OrderDetailScreen extends StatelessWidget {
   final Order order;
 
-  const OrderDetailScreen({super.key, required this.order});
+  OrderDetailScreen({super.key, required this.order});
+  final OrderController orderController = OrderController();
 
   @override
   Widget build(BuildContext context) {
@@ -185,7 +187,7 @@ class OrderDetailScreen extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), 
               child: Container(
                 width: 450, 
-                height: 120, 
+                height: 180, 
                 decoration: BoxDecoration(
                   color: Colors.white, 
                   border: Border.all(
@@ -197,7 +199,8 @@ class OrderDetailScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start, 
                   children: [
-                    Padding(padding: const EdgeInsets.all(8),
+                    Padding(
+                      padding: const EdgeInsets.all(8),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -231,12 +234,15 @@ class OrderDetailScreen extends StatelessWidget {
                       ],
                     ),
                     ),
-                Row(
+                    Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     TextButton(
-                onPressed: (){
-
+                onPressed: () async{
+                  await orderController.updateDeliveryStatus(
+                    id: order.id,
+                    context: context
+                  );
                 }, child: Text(
                   'Mark as Delivered?', 
                style: GoogleFonts.montserrat( 
@@ -246,8 +252,11 @@ class OrderDetailScreen extends StatelessWidget {
                 ) 
                 ),
                 TextButton(
-                onPressed: (){
-                
+                onPressed: () async{ 
+                await orderController.cancelOrder(
+                    id: order.id,
+                    context: context
+                  );
                 }, child: Text(
                   'Cancel', 
                style: GoogleFonts.montserrat( 
@@ -257,7 +266,7 @@ class OrderDetailScreen extends StatelessWidget {
                 ) 
                 )
                   ],
-                )
+                ),
                   ],
                 ),
               ),  
