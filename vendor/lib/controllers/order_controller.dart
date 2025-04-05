@@ -63,6 +63,7 @@ class OrderController {
          }, 
          body: jsonEncode({
           "delivered": true, 
+          "processing": false
          }),
          );
 
@@ -86,6 +87,7 @@ class OrderController {
          }, 
          body: jsonEncode({
           "processing": false, 
+          "delivered": false
          }),
          );
 

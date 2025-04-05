@@ -77,7 +77,7 @@ orderRouter.patch('/api/orders/:id/delivered', async(req,res)=> {
         const {id} = req.params;
        const updatedOrder = await Order.findByIdAndUpdate(
             id, 
-            {delivered: true},
+            {delivered: true, processing: false},
             {new:true}
       );
 
@@ -97,7 +97,7 @@ orderRouter.patch('/api/orders/:id/processing', async(req,res)=> {
         const {id} = req.params;
        const updatedOrder = await Order.findByIdAndUpdate(
              id, 
-            {processing: false} ,
+            {processing: false, delivered: false},
             {new:true}
       );
 
