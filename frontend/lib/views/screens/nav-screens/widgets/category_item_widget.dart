@@ -1,47 +1,45 @@
 import 'package:ecommerceflutter/controllers/category_controller.dart';
 import 'package:ecommerceflutter/models/category.dart';
+import 'package:ecommerceflutter/provider/category_provider.dart';
 import 'package:ecommerceflutter/views/screens/detail/screens/inner_category_screen.dart';
 import 'package:ecommerceflutter/views/screens/nav-screens/widgets/reusable_text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class CategoryItemWidget extends StatefulWidget {
+class CategoryItemWidget extends ConsumerStatefulWidget {
   const CategoryItemWidget({super.key});
 
   @override
-  State<CategoryItemWidget> createState() => _CategoryItemWidgetState();
+  ConsumerState<CategoryItemWidget> createState() => _CategoryItemWidgetState();
 }
 
-class _CategoryItemWidgetState extends State<CategoryItemWidget> {
+class _CategoryItemWidgetState extends ConsumerState<CategoryItemWidget> {
 
-  late Future<List<Categorys>> futureCategories;
+  
   @override
   void initState(){
     super.initState();
-    futureCategories = CategoryController().loadCategories();
+    _fetchCategories();
+  }
+
+  Future<void> _fetchCategories() async{
+    final CategoryController categoryController = CategoryController();
+    try{
+      final categories = await categoryController.loadCategories();
+      ref.read(categoryProvider.notifier).setCategories(categories);
+    }catch(e){
+
+    }
   }
   @override
   Widget build(BuildContext context) {
+    final categories = ref.watch(categoryProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ReusableTextWidget(title: 'Categories', subtitle: 'View All'),
-        FutureBuilder(
-        future: futureCategories,
-         builder: (context, snapshot){
-          if(snapshot.connectionState == ConnectionState.waiting){
-            return const Center(
-              child: CircularProgressIndicator()
-            );
-          } else if (snapshot.hasError){
-            return Center(
-              child :Text('Error ${snapshot.error}')
-            );
-          } else if(!snapshot.hasData || snapshot.data!.isEmpty){
-            return const Center(child: Text('No Categories'));
-          } else {
-          final categories = snapshot.data!;
-          return GridView.builder(
+        ReusableTextWidget(title: 'Categories', subtitle: "View All"),
+        GridView.builder(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: categories.length,
@@ -69,10 +67,7 @@ class _CategoryItemWidgetState extends State<CategoryItemWidget> {
                 ),
               );
             },
-            );
-         }
-         } 
-         ),
+          )
       ],
     );
   }
