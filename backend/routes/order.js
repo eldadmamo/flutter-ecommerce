@@ -39,6 +39,21 @@ orderRouter.get('/api/orders/:buyerId', async (req, res) => {
     }
 })
 
+orderRouter.delete("/api/orders/:id", async (req,res) => {
+    try{
+        const {id} = req.params;
+        const deleteOrder = await Order.findByIdAndDelete(id);
+
+        if(!deleteOrder){
+            return res.status(404).json({msg: "not found"});
+        } else {
+            return res.status(200).json({msg: "Order was deleted Successfully"});
+        }
+    }catch(e){
+        return res.status(500).json({error: e.message});
+    }
+})
+
 module.exports = orderRouter;
 
 
