@@ -1,125 +1,27 @@
-import 'package:ecommerceflutter/controllers/order_controller.dart';
 import 'package:ecommerceflutter/models/order.dart';
-import 'package:ecommerceflutter/provider/order_provider.dart';
-import 'package:ecommerceflutter/provider/user_provider.dart';
-import 'package:ecommerceflutter/views/screens/detail/screens/order_detail_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class OrderScreen extends ConsumerStatefulWidget {
-  const OrderScreen({super.key});
+class OrderDetailScreen extends StatelessWidget {
+  final Order order;
 
-  @override
-  ConsumerState<OrderScreen> createState() => _OrderScreenState();
-}
+  const OrderDetailScreen({super.key, required this.order});
 
-class _OrderScreenState extends ConsumerState<OrderScreen> {
-  @override
-  void initState(){
-    super.initState();
-    _fetchOrders();
-  }
-  Future<void> _fetchOrders() async {
-    final user = ref.read(userProvider);
-    if(user!=null){
-      final OrderController orderController = OrderController();
-      try{
-        final orders = await orderController.loadOrders(buyerId: user.id);
-        ref.read(orderProvider.notifier).setOrders(orders);
-      } catch(e){
-        print('Error fetching order: $e');
-      }
-    }
-  }
   @override
   Widget build(BuildContext context) {
-    final orders = ref.watch(orderProvider);
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size.fromHeight(
-        MediaQuery.of(context).size.height * 0.20), 
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: 118, 
-        clipBehavior: Clip.hardEdge,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(
-              'assets/icons/cartb.png'
-          ), 
-          fit: BoxFit.cover
-          )
+      appBar: AppBar(
+        title: Text(
+        order.productName,
+        style: GoogleFonts.montserrat( 
+          fontWeight: FontWeight.bold
         ),
-        child: Stack(
-          children: [
-            Positioned(
-              left: 322, 
-              top: 52, 
-              child: Stack(
-                children: [
-                  Image.asset('assets/icons/not.png', 
-                  width: 25,
-                  height: 25,
-                  ),
-                  Positioned(
-                    top: 0, 
-                    right: 0, 
-                    child: Container(
-                      width: 20, 
-                      height: 20, 
-                      padding: const EdgeInsets.all(4), 
-                      decoration: BoxDecoration(
-                        color: Colors.yellow.shade800,
-                        borderRadius: BorderRadius.circular(12)
-                      ),
-                      child: Center(
-                        child: Text(
-                          orders.length.toString(),
-                          style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 11
-                        ),),
-                      ),
-                    )
-                  )
-                ],
-              )
-            ),
-            Positioned(
-              left: 61,
-              top: 51,
-              child: Text(
-                'My Orders', 
-                style: GoogleFonts.montserrat(
-                fontSize: 18,
-                fontWeight: FontWeight.w600 ,
-                color: Colors.white
-              ),)
-              )
-          ],
-        ),
-      )
+        )
       ),
-      body: orders.isEmpty ? 
-      const Center(
-        child: Text('No Order Found'),
-       ) 
-        : 
-       ListView.builder(
-        itemCount: orders.length,
-        itemBuilder: (context, index){
-        final Order order = orders[index];
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 25), 
-          child: InkWell(
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context){
-                return OrderDetailScreen(order: order);
-              }));
-            },
-            child: Container( 
-              width: 400, 
+      body: Column(
+        children: [
+          Container( 
+              width: 450, 
               height: 153, 
               clipBehavior: Clip.antiAlias,
               decoration: const BoxDecoration(),
@@ -229,7 +131,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                               left: 13, 
                               top: 113, 
                               child: Container(
-                                width: 110, 
+                                width: 90, 
                                 height: 25, 
                                 clipBehavior: Clip.antiAlias,
                                 decoration: BoxDecoration(
@@ -278,9 +180,74 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                 ),
               ),
             ),
-          ),
-        );
-       })
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), 
+              child: Container(
+                width: 450, 
+                height: order.delivered==true? 170:120, 
+                decoration: BoxDecoration(
+                  color: Colors.white, 
+                  border: Border.all(
+                    color: const Color(
+                      0XFFEFF0F2
+                      ),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start, 
+                  children: [
+                    Padding(padding: const EdgeInsets.all(8),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Delivery Address', style: GoogleFonts.lato(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold, 
+                          letterSpacing: 1.7
+                        ),
+                        ),
+                       const SizedBox(height: 8,), 
+                       Text("${order.state} ${order.city} ${order.locality}", 
+                         style: GoogleFonts.lato(
+                          fontSize: 17,
+                          letterSpacing: 1.5, 
+                          fontWeight: FontWeight.w900
+                         ),
+                       ),
+                       Text("to ${order.fullName}", 
+                       style: GoogleFonts.lato( 
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold, 
+                       ),
+                       ),
+                       Text(
+                        "Order Id: ${order.id}", 
+                        style: GoogleFonts.lato(
+                          fontWeight: FontWeight.bold
+                        ),
+                       ),
+                      ],
+                    ),
+                    ),
+               order.delivered==true ? TextButton(
+                onPressed: (){
+
+                }, child: Text('Leave a review', 
+               style: GoogleFonts.montserrat( 
+                  fontSize: 12, 
+                  fontWeight: FontWeight.bold
+                  ),
+                ) 
+                ): SizedBox()
+                  ],
+                ),
+              ),  
+            ),
+
+            
+        ],
+      ),
     );
   }
 }
