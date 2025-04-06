@@ -16,6 +16,7 @@ class OrderDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _OrderDetailScreenState extends ConsumerState<OrderDetailScreen> {
+  final TextEditingController _reviewController = TextEditingController();
   final OrderController orderController = OrderController();
 
   @override

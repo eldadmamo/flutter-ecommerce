@@ -7,7 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 class OrderDetailScreen extends StatefulWidget {
   final Order order;
 
-  OrderDetailScreen({super.key, required this.order});
+  const  OrderDetailScreen({super.key, required this.order});
 
   @override
   State<OrderDetailScreen> createState() => _OrderDetailScreenState();
@@ -16,9 +16,9 @@ class OrderDetailScreen extends StatefulWidget {
 class _OrderDetailScreenState extends State<OrderDetailScreen> {
   final TextEditingController _reviewController = TextEditingController();
 
-  double rating = 0.0;
-
   final ProductReviewController _productReviewController = ProductReviewController();
+
+  double rating = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -263,7 +263,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                             emptyIcon: Icons.star_border, 
                             onRatingChanged: (value) {
                               rating = value;
-                            },
+                            } ,                          
                             initialRating: 3,
                             maxRating: 5,
                           ), 
@@ -275,7 +275,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           final review = _reviewController.text;
 
                           _productReviewController.uploadReview(
-                            id: id, 
+                        
                             buyerId: widget.order.buyerId, 
                             email: widget.order.email, 
                             fullName: widget.order.fullName, 

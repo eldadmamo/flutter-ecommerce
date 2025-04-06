@@ -25,7 +25,7 @@ class ProductReviewController {
         review: review
       );
 
-      http.Response response =  await http.post(Uri.parse('$uri/api/orders'),
+      http.Response response =  await http.post(Uri.parse('$uri/api/product-review'),
         body: productReview.toJson(),
         headers: <String, String> {
           "Content-Type": "application/json; charset=UTF-8"

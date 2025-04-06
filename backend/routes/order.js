@@ -16,7 +16,7 @@ orderRouter.post('/api/orders', async (req, res) => {
          await order.save();
          return res.status(201).json(order);
     }catch(e){
-        res.staus(500).json({error: e.message});
+        res.status(500).json({error: e.message});
     }
 })
 
