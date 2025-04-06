@@ -1,18 +1,32 @@
+import 'package:custom_rating_bar/custom_rating_bar.dart';
+import 'package:ecommerceflutter/controllers/product_review_controller.dart';
 import 'package:ecommerceflutter/models/order.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class OrderDetailScreen extends StatelessWidget {
+class OrderDetailScreen extends StatefulWidget {
   final Order order;
 
-  const OrderDetailScreen({super.key, required this.order});
+  OrderDetailScreen({super.key, required this.order});
+
+  @override
+  State<OrderDetailScreen> createState() => _OrderDetailScreenState();
+}
+
+class _OrderDetailScreenState extends State<OrderDetailScreen> {
+  final TextEditingController _reviewController = TextEditingController();
+
+  double rating = 0.0;
+
+  final ProductReviewController _productReviewController = ProductReviewController();
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-        order.productName,
+        widget.order.productName,
         style: GoogleFonts.montserrat( 
           fontWeight: FontWeight.bold
         ),
@@ -64,7 +78,7 @@ class OrderDetailScreen extends StatelessWidget {
                                     Positioned(
                                       left: 10,
                                       top: 5, 
-                                      child: Image.network(order.image ,
+                                      child: Image.network(widget.order.image ,
                                       width: 58,
                                       height: 67,
                                       fit: BoxFit.cover,
@@ -91,7 +105,7 @@ class OrderDetailScreen extends StatelessWidget {
                                           SizedBox(
                                             width: double.infinity,
                                             child: Text(
-                                              order.productName, 
+                                              widget.order.productName, 
                                               style: GoogleFonts.montserrat(
                                                 fontWeight: FontWeight.w700, 
                                                 fontSize: 16
@@ -101,7 +115,7 @@ class OrderDetailScreen extends StatelessWidget {
                                           SizedBox(height: 4),
                                           Align(
                                             alignment: Alignment.centerLeft,
-                                            child: Text(order.category,
+                                            child: Text(widget.order.category,
                                             style: GoogleFonts.montserrat(
                                               color: const Color(0XFF7F808c),
                                               fontWeight: FontWeight.w600,
@@ -112,7 +126,7 @@ class OrderDetailScreen extends StatelessWidget {
             
                                           const SizedBox(height: 2,), 
                                             Text(
-                                              "\$${order.productPrice.toStringAsFixed(2)}",
+                                              "\$${widget.order.productPrice.toStringAsFixed(2)}",
                                               style: GoogleFonts.montserrat(
                                                 fontSize: 15,
                                                 fontWeight: FontWeight.bold,
@@ -135,9 +149,9 @@ class OrderDetailScreen extends StatelessWidget {
                                 height: 25, 
                                 clipBehavior: Clip.antiAlias,
                                 decoration: BoxDecoration(
-                                  color: order.delivered==true
+                                  color: widget.order.delivered==true
                                  ? const Color(0XFF3C55EF):
-                                 order.processing == true ? Colors.purple: Colors.red,
+                                 widget.order.processing == true ? Colors.purple: Colors.red,
                                  borderRadius: BorderRadius.circular(4), 
                                 ),
                                 child: Stack(
@@ -147,7 +161,7 @@ class OrderDetailScreen extends StatelessWidget {
                                       left: 9, 
                                       top: 2,
                                       child: Text(
-                                        order.delivered==true? "Delivered": order.processing==true? "Processing": "Cancelled", 
+                                        widget.order.delivered==true? "Delivered": widget.order.processing==true? "Processing": "Cancelled", 
             
                                         style: GoogleFonts.montserrat(
                                           color: Colors.white,
@@ -184,7 +198,7 @@ class OrderDetailScreen extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), 
               child: Container(
                 width: 450, 
-                height: order.delivered==true? 170:120, 
+                height: widget.order.delivered==true? 170:120, 
                 decoration: BoxDecoration(
                   color: Colors.white, 
                   border: Border.all(
@@ -208,21 +222,21 @@ class OrderDetailScreen extends StatelessWidget {
                         ),
                         ),
                        const SizedBox(height: 8,), 
-                       Text("${order.state} ${order.city} ${order.locality}", 
+                       Text("${widget.order.state} ${widget.order.city} ${widget.order.locality}", 
                          style: GoogleFonts.lato(
                           fontSize: 17,
                           letterSpacing: 1.5, 
                           fontWeight: FontWeight.w900
                          ),
                        ),
-                       Text("to ${order.fullName}", 
+                       Text("to ${widget.order.fullName}", 
                        style: GoogleFonts.lato( 
                         fontSize: 17,
                         fontWeight: FontWeight.bold, 
                        ),
                        ),
                        Text(
-                        "Order Id: ${order.id}", 
+                        "Order Id: ${widget.order.id}", 
                         style: GoogleFonts.lato(
                           fontWeight: FontWeight.bold
                         ),
@@ -230,9 +244,54 @@ class OrderDetailScreen extends StatelessWidget {
                       ],
                     ),
                     ),
-               order.delivered==true ? TextButton(
+               widget.order.delivered==true ? TextButton(
                 onPressed: (){
+                  showDialog(context: context, builder: (context){
+                    return AlertDialog(
+                      title: Text('Leave a review'),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextFormField(
+                            controller: _reviewController,
+                            decoration: InputDecoration(
+                              labelText: 'Your Review'
+                            ),
+                          ),
+                          RatingBar(
+                            filledIcon: Icons.star, 
+                            emptyIcon: Icons.star_border, 
+                            onRatingChanged: (value) {
+                              rating = value;
+                            },
+                            initialRating: 3,
+                            maxRating: 5,
+                          ), 
+                        ],
+                      ),
+                      actions: [
+                        TextButton(
+                        onPressed: (){
+                          final review = _reviewController.text;
 
+                          _productReviewController.uploadReview(
+                            id: id, 
+                            buyerId: widget.order.buyerId, 
+                            email: widget.order.email, 
+                            fullName: widget.order.fullName, 
+                            productId: widget.order.id, 
+                            rating: rating, 
+                            review: review, 
+                            context: context
+                          );
+                        }, 
+                        child: const Text(
+                          'Submit'
+                        )
+                        )
+                      ],
+                    );
+                  });
                 }, child: Text('Leave a review', 
                style: GoogleFonts.montserrat( 
                   fontSize: 12, 
