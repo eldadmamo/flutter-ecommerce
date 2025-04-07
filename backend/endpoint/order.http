@@ -57,6 +57,13 @@ Content-Type: application/json
 Accept: application/json
 withCredentials: true
 
+###
+
+GET {{baseUrl}}/{{urlPath}}/orders
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
 
 
 
