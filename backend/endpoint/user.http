@@ -42,3 +42,12 @@ withCredentials: true
   "locality":"ET"
 }
 
+
+
+###
+
+GET {{baseUrl}}/{{urlPath}}/users
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+

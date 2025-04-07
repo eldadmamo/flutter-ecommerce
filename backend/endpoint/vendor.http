@@ -27,3 +27,11 @@ withCredentials: true
   "email": "abenezer456@gmail.com" ,
   "password":"123456"
 }
+
+###
+
+GET {{baseUrl}}/{{urlPath}}/vendors
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
