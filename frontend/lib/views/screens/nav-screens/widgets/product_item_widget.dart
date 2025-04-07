@@ -54,7 +54,7 @@ class ProductItemWidget extends StatelessWidget {
                 ],
               ),
             ),
-            const  SizedBox(height: 8),
+    
             Text(
               product.productName, 
               overflow: TextOverflow.ellipsis,
@@ -62,9 +62,23 @@ class ProductItemWidget extends StatelessWidget {
               fontSize: 14,
               color: const Color(0XFF212121),
               fontWeight: FontWeight.bold
+              ),
             ),
+            product.averageRating==0
+            ? SizedBox()
+            :Row(
+              children: [
+                Icon(Icons.star, color: Colors.amber,size: 12,),
+                const SizedBox(width: 4,),
+                Text(product.averageRating.toStringAsFixed(1), 
+                style: GoogleFonts.montserrat( 
+                  fontWeight: FontWeight.bold, 
+                  fontSize: 12
+                ),
+                ) 
+              ],
             ),
-            const SizedBox(height: 4),
+            
             Text(
               product.category, 
               style: GoogleFonts.quicksand(

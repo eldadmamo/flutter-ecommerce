@@ -10,12 +10,12 @@ Accept: application/json
 withCredentials: true
 
 {
-  "buyerId": "john wick", 
+  "buyerId": "67e6dea3eb2611a2eba5944a", 
   "email": "eldadfikre456@gmail.com", 
-  "fullName": "eldad", 
-  "productId": "567890987", 
-  "rating": 10, 
-  "review": "wow what an amazing product. please purchase it"
+  "fullName": "Eldad Fikre Mamo", 
+  "productId": "67ee80d2b5e8f3f1a7d1800b", 
+  "rating": 4.5, 
+  "review": "Great Product!"
 }
 
 ###
