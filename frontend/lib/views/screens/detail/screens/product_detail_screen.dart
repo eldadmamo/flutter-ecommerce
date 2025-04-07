@@ -1,5 +1,6 @@
 import 'package:ecommerceflutter/models/product.dart';
 import 'package:ecommerceflutter/provider/cart_provider.dart';
+import 'package:ecommerceflutter/provider/favorite_provider.dart';
 import 'package:ecommerceflutter/services/manage_http_response.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,6 +20,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final cartProviderData = ref.read(cartProvider.notifier);
+    final favoriteProviderData = ref.read(favoriteProvider.notifier);
+    ref.watch(favoriteProvider);
     final cartData = ref.watch(cartProvider);
     final isInCart = cartData.containsKey(widget.product.id);
 
@@ -35,10 +38,25 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         actions: [
           IconButton(
             onPressed: (){
-
+              favoriteProviderData.addProductToFavorite(
+                productName: widget.product.productName, 
+                productPrice: widget.product.productPrice,
+                category: widget.product.category, 
+                image: widget.product.images, 
+                vendorId: widget.product.vendorId, 
+                productQuantity: widget.product.quantity, 
+                quantity: 1, 
+                productId: widget.product.id, 
+                description: widget.product.description, 
+                fullName: widget.product.fullName
+              );
+              showSnackBar(context, "added ${widget.product.productName}");
             }, 
-            icon: Icon(Icons.favorite_border),
-          ),
+            icon: favoriteProviderData.getFavoriteItem.containsKey(widget.product.id)
+            ? Icon(Icons.favorite,
+            color: Colors.red,
+            ) : const Icon(Icons.favorite_border)
+          )
         ],
       ),
       body: Column(
@@ -179,7 +197,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       bottomSheet: Padding(
         padding: EdgeInsets.all(8), 
         child: InkWell(
-          onTap: isInCart? null: (){
+          onTap: isInCart
+          ? null
+          : () {
             cartProviderData.addProductToCart(
               productName: widget.product.productName, 
               productPrice: widget.product.productPrice, 
