@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vendor/models/orders.dart';
 import 'package:vendor/services/manage_http_response.dart';
 import 'package:vendor/views/global_variables.dart';
@@ -13,10 +14,13 @@ class OrderController {
   Future<List<Order>> loadOrders({
     required String vendorId 
   }) async{
+        SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String? token = sharedPreferences.getString('auth_token');
     try{
       http.Response response = await http.get(Uri.parse('$uri/api/orders/vendors/$vendorId'),
       headers: <String, String>{
-        "Content-Type": "application/json; charset=UTF-8"
+        "Content-Type": "application/json; charset=UTF-8",
+        "x-auth-token": token!, 
       });
 
       if(response.statusCode==200){
@@ -80,6 +84,8 @@ class OrderController {
     required context 
     }) async {
       try{
+      SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+       String? token = sharedPreferences.getString('auth_token');
        http.Response response =  await http.patch(
          Uri.parse('$uri/api/orders/$id/processing'), 
          headers: <String, String> {

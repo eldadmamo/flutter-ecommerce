@@ -1,10 +1,11 @@
 const express = require('express');
 const orderRouter = express.Router();
 const Order = require('../models/order');
+const {auth,vendorAuth} = require('../middleware/auth')
 
 //Post router for createing orders
 
-orderRouter.post('/api/orders', async (req, res) => {
+orderRouter.post('/api/orders',auth, async (req, res) => {
     try{
         const {fullName, email,state,city,locality,productName,productPrice,quantity,category,image,buyerId,vendorId} = req.body;
         const createdAt = new Date().getMilliseconds();
@@ -22,7 +23,7 @@ orderRouter.post('/api/orders', async (req, res) => {
 
 //Get Route for fetching 
 
-orderRouter.get('/api/orders/:buyerId', async (req, res) => {
+orderRouter.get('/api/orders/:buyerId',auth, async (req, res) => {
     try{
         //extract the buyer from request paramerts
         const {buyerId} =req.params;
@@ -39,8 +40,8 @@ orderRouter.get('/api/orders/:buyerId', async (req, res) => {
     }
 })
 
-orderRouter.delete("/api/orders/:id", async (req,res) => {
-    try{
+orderRouter.delete("/api/orders/:id",auth, async (req,res) => {
+    try{ 
         const {id} = req.params;
         const deleteOrder = await Order.findByIdAndDelete(id);
 
@@ -55,7 +56,7 @@ orderRouter.delete("/api/orders/:id", async (req,res) => {
 })
 
 
-orderRouter.get('/api/orders/vendors/:vendorId', async (req, res) => {
+orderRouter.get('/api/orders/vendors/:vendorId',auth,vendorAuth, async (req, res) => {
     try{
         //extract the buyer from request paramerts
         const {vendorId} =req.params;

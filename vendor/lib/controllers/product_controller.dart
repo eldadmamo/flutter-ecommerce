@@ -1,5 +1,6 @@
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vendor/models/product.dart';
 import 'package:vendor/services/manage_http_response.dart';
 import 'package:vendor/views/global_variables.dart';
@@ -18,6 +19,8 @@ class ProductController {
     required List<XFile>? pickedImages, 
     required context,
   })async{
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String? token = sharedPreferences.getString('auth_token');
    if (pickedImages!=null){
      final cloudinary = CloudinaryPublic(
       cloud,
@@ -49,7 +52,8 @@ class ProductController {
         http.Response response = await http.post(Uri.parse("$uri/api/add-product"), 
           body: product.toJson(),
           headers: <String, String> {
-            "Content-Type": 'application/json; charset=UTF-8'
+            "Content-Type": 'application/json; charset=UTF-8',
+            'x-auth-token': token!
           }
          );
          manageHttpResponse(response: response, context: context, onSuccess: (){

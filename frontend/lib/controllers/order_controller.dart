@@ -4,6 +4,7 @@ import 'package:ecommerceflutter/global_variables.dart';
 import 'package:ecommerceflutter/models/order.dart';
 import 'package:ecommerceflutter/services/manage_http_response.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OrderController {
   uploadOrders({
@@ -25,6 +26,8 @@ class OrderController {
   required context 
   })async{
     try{
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String? token = preferences.getString("auth_token");
       final Order order = Order(
         id: id, 
         fullName: fullName, 
@@ -46,7 +49,8 @@ class OrderController {
         http.Response response =  await http.post(Uri.parse('$uri/api/orders'),
         body: order.toJson(),
         headers: <String, String> {
-          "Content-Type": "application/json; charset=UTF-8"
+          "Content-Type": "application/json; charset=UTF-8",
+          "x-auth-token": token!
         });
 
 
@@ -64,9 +68,12 @@ class OrderController {
     required String buyerId 
   }) async{
     try{
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String? token = preferences.getString("auth_token");
       http.Response response = await http.get(Uri.parse('$uri/api/orders/$buyerId'),
       headers: <String, String>{
-        "Content-Type": "application/json; charset=UTF-8"
+        "Content-Type": "application/json; charset=UTF-8",
+        "x-auth-token": token!
       });
 
       if(response.statusCode==200){
@@ -88,9 +95,12 @@ class OrderController {
     required context 
   }) async {
     try{
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String? token = preferences.getString("auth_token");
       http.Response response = await http.delete(Uri.parse('$uri/api/orders/$id'), 
       headers: <String, String>{
-        "Content-Type": "application/json; charset=UTF-8"
+        "Content-Type": "application/json; charset=UTF-8",
+        "x-auth-token": token!
       });
 
       manageHttpResponse(response: response, context: context, onSuccess: (){
