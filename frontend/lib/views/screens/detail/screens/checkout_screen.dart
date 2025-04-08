@@ -2,7 +2,9 @@
 import 'package:ecommerceflutter/controllers/order_controller.dart';
 import 'package:ecommerceflutter/provider/cart_provider.dart';
 import 'package:ecommerceflutter/provider/user_provider.dart';
+import 'package:ecommerceflutter/services/manage_http_response.dart';
 import 'package:ecommerceflutter/views/screens/detail/screens/shipping_address_screen.dart';
+import 'package:ecommerceflutter/views/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -406,6 +408,12 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   delivered: false, 
                   context: context
                   );
+              }).then((value){
+                _cartProvider.clearCart();
+                showSnackBar(context, 'Order Successfully placed');
+                Navigator.push(context, MaterialPageRoute(builder: (context){
+                  return MainScreen();
+                }));
               });
             }
           },

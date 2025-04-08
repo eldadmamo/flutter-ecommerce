@@ -13,11 +13,14 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
+      appBar: PreferredSize(preferredSize: Size.fromHeight(
+        MediaQuery.of(context).size.height * 0.20
+      ), child: const HeaderWidget()),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            HeaderWidget(),
+            
             BannerWidget(),
             CategoryItemWidget(),
             ReusableTextWidget(title: 'Top rated Product', subtitle: 'View All'),

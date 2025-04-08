@@ -144,6 +144,14 @@ class CartNotifier extends StateNotifier<Map<String,Cart>>{
     return totalAmount;
  }
 
+ void clearCart(){
+  state = {};
+
+  state = {...state};
+
+  _saveCartItems();
+ }
+
  Map<String, Cart> get getCartItems => state;
  
 
