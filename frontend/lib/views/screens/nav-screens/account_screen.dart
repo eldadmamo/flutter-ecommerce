@@ -1,16 +1,27 @@
 import 'package:ecommerceflutter/controllers/auth_controller.dart';
+import 'package:ecommerceflutter/provider/cart_provider.dart';
+import 'package:ecommerceflutter/provider/favorite_provider.dart';
+import 'package:ecommerceflutter/provider/user_provider.dart';
 import 'package:ecommerceflutter/views/screens/detail/screens/order_screen.dart';
+import 'package:ecommerceflutter/views/screens/detail/screens/shipping_address_screen.dart';
 import 'package:ecommerceflutter/views/screens/nav-screens/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class AccountScreen extends StatelessWidget {
-  AccountScreen({super.key});
-  final AuthController _authController = AuthController();
- 
+class AccountScreen extends ConsumerStatefulWidget {
+ const AccountScreen({Key?key}): super(key: key);
 
   @override
+  ConsumerState<AccountScreen> createState() => _AccountScreenState();
+}
+
+class _AccountScreenState extends ConsumerState<AccountScreen> {
+  @override
   Widget build(BuildContext context) {
+    final user = ref.read(userProvider);
+    final cartData = ref.read(cartProvider);
+    final favoriteCount = ref.read(favoriteProvider);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -64,25 +75,45 @@ class AccountScreen extends StatelessWidget {
                   ), 
                   Align(
                     alignment: const Alignment(0, 0.03),
-                    child: Text('Eldad Mamo', 
+                    child: user!.fullName!=""? Text(
+                      user.fullName, 
                     style: GoogleFonts.montserrat(
                       color: Colors.white,
                       fontSize: 22, 
                       fontWeight: FontWeight.bold
-                    ),),
+                    ),
+                    ): Text(
+                      'User', 
+                    style: GoogleFonts.montserrat(
+                      color: Colors.white,
+                      fontSize: 22, 
+                      fontWeight: FontWeight.bold
+                    ),
+                    )
                   ), 
                   Align(
                     alignment: const Alignment(0.05, 0.17),
                     child: InkWell(
-                      onTap: (){}, 
-                      child: Text(
-                        'Ethiopia', 
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context){
+                          return const ShippingAddressScreen();
+                        }));
+                      }, 
+                      child: user.state !="" ? Text(
+                        user.state, 
                         style: GoogleFonts.montserrat(
                           color: Colors.white, 
                           fontWeight: FontWeight.bold,
                           letterSpacing: 1.7 
                         ),
-                      ),                   
+                      ): Text(
+                        'States', 
+                        style: GoogleFonts.montserrat(
+                          color: Colors.white, 
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.7 
+                        ),
+                      )                   
                     ),
                   ), 
                   Align(
@@ -151,7 +182,7 @@ class AccountScreen extends StatelessWidget {
                             left: 130,
                             top: 66,  
                             child: Text(
-                              '5', 
+                            favoriteCount.length.toString(), 
                             style: GoogleFonts.montserrat(
                               color: Colors.white, 
                               fontSize: 22, 
@@ -205,7 +236,7 @@ class AccountScreen extends StatelessWidget {
                             left: 20, 
                             top: 66, 
                             child: Text(
-                              "20", 
+                              cartData.length.toString(), 
                             style: GoogleFonts.montserrat(
                               color: Colors.white, 
                               fontSize: 22,
@@ -262,7 +293,11 @@ class AccountScreen extends StatelessWidget {
             ),
             
             ListTile(
-              onTap: (){},
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context){
+                  return const OrderScreen();
+                }));
+              },
               leading: Image.asset(
                 'assets/icons/orders.png',
               ),
@@ -275,7 +310,11 @@ class AccountScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10,), 
             ListTile(
-              onTap: (){},
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context){
+                  return const OrderScreen();
+                }));
+              },
               leading: Image.asset(
                 'assets/icons/history.png',
               ),

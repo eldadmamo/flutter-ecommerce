@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 class ShippingAddressScreen extends ConsumerStatefulWidget {
   const ShippingAddressScreen({super.key});
   @override
+  // ignore: library_private_types_in_public_api
   _ShippingAddressScreenState createState() => _ShippingAddressScreenState();
 }
 
@@ -147,7 +148,8 @@ class _ShippingAddressScreenState extends ConsumerState<ShippingAddressScreen> {
                 id: user!.id, 
                 state: _stateController.text, 
                 city: _cityController.text, 
-                locality: _localityController.text 
+                locality: _localityController.text,
+                ref: ref,
                ).whenComplete((){
                 updateUser.recreateUserState(
                   state: _stateController.text, 

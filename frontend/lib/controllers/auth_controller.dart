@@ -139,6 +139,7 @@ class AuthController {
     required String state,
     required String city,
     required String locality,
+    required WidgetRef ref,
   }) async {
     try{
       final http.Response response =  await http.put(Uri.parse('$uri/api/users/$id'), 
@@ -153,7 +154,9 @@ class AuthController {
 
       print(response.body);
 
-      manageHttpResponse(response: response, context: context, 
+      manageHttpResponse(
+      response: response, 
+      context: context, 
       onSuccess: () async{
         final updateUser = jsonDecode(response.body);
         // Access Shared preferences for local data storage
@@ -162,14 +165,12 @@ class AuthController {
 
         final userJson = jsonEncode(updateUser);
 
-        providerContainer.read(userProvider.notifier).setUser(userJson);
+        ref.read(userProvider.notifier).setUser(userJson);
 
         await preferences.setString('user', userJson);
 
-        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context){
-          return CheckoutScreen();
-        }), (route) => false);
-        showSnackBar(context, 'Logged in');
+      
+        showSnackBar(context, 'Saved Successfully');
       });
 
     }catch(e){
