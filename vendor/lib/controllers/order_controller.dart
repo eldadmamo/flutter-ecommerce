@@ -14,7 +14,7 @@ class OrderController {
   Future<List<Order>> loadOrders({
     required String vendorId 
   }) async{
-        SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String? token = sharedPreferences.getString('auth_token');
     try{
       http.Response response = await http.get(Uri.parse('$uri/api/orders/vendors/$vendorId'),
@@ -22,6 +22,11 @@ class OrderController {
         "Content-Type": "application/json; charset=UTF-8",
         "x-auth-token": token!, 
       });
+
+      
+      // print('Sending token: $token');
+
+
 
       if(response.statusCode==200){
        List<dynamic> data = jsonDecode(response.body);
@@ -63,7 +68,7 @@ class OrderController {
        http.Response response =  await http.patch(
          Uri.parse('$uri/api/orders/$id/delivered'), 
          headers: <String, String> {
-          "Content-Type": "application/json; charset=UTF-8"
+          "Content-Type": "application/json; charset=UTF-8",
          }, 
          body: jsonEncode({
           "delivered": true, 
@@ -89,7 +94,8 @@ class OrderController {
        http.Response response =  await http.patch(
          Uri.parse('$uri/api/orders/$id/processing'), 
          headers: <String, String> {
-          "Content-Type": "application/json; charset=UTF-8"
+          "Content-Type": "application/json; charset=UTF-8",
+          "x-auth-token": token!, 
          }, 
          body: jsonEncode({
           "processing": false, 

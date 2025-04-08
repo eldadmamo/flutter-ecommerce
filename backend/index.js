@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -10,6 +11,7 @@ const productReviewRouter =require('./routes/product_review')
 const vendorRouter = require('./routes/vendor')
 const orderRouter = require('./routes/order')
 const PORT = 3000;
+
 
 const app = express();
 app.use(cors({ origin: '*', credentials: true }));

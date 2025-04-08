@@ -45,3 +45,13 @@ Content-Type: application/json
 Accept: application/json
 withCredentials: true
 
+
+
+###
+
+GET {{baseUrl}}/{{urlPath}}/top-rated-products
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+

@@ -92,7 +92,7 @@ productRouter.get('/api/top-rated-products', async (req,res) => {
         }
         //return the top-rated product as a response 
         return res.status(200).json(topRatedProducts);
-
+ 
     }catch(e){
         return res.status(500).json({error:e.message})
     }

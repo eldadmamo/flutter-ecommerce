@@ -24,8 +24,8 @@ Accept: application/json
 withCredentials: true
 
 {
-  "email": "abenezer456@gmail.com" ,
-  "password":"123456"
+  "email": "fikre@gmail.com" ,
+  "password":"12345678"
 }
 
 ###

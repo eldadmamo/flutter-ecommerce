@@ -36,6 +36,7 @@ GET {{baseUrl}}/{{urlPath}}/orders/vendors/67ed4744d0980f67457547b4
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
+x-auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZWQ0NzQ0ZDA5ODBmNjc0NTc1NDdiNCIsImlhdCI6MTc0NDExNzA1Mn0.vTdzW08r6E4qHIBMy4cCh_p90sx4KQOAvzd9h_g_P3g
 
 
 ###
