@@ -1,5 +1,6 @@
 import 'package:ecommerceflutter/controllers/auth_controller.dart';
 import 'package:ecommerceflutter/provider/cart_provider.dart';
+import 'package:ecommerceflutter/provider/delivered_order_count_provider.dart';
 import 'package:ecommerceflutter/provider/favorite_provider.dart';
 import 'package:ecommerceflutter/provider/user_provider.dart';
 import 'package:ecommerceflutter/views/screens/detail/screens/order_screen.dart';
@@ -19,7 +20,23 @@ class AccountScreen extends ConsumerStatefulWidget {
 class _AccountScreenState extends ConsumerState<AccountScreen> {
   @override
   Widget build(BuildContext context) {
+    // Read the user first
     final user = ref.read(userProvider);
+    // Check if user is null immediately
+    if (user == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+    // Now safely access user.id
+    final buyerId = user.id;
+    
+    // Fetch delivered orders using the valid buyerId
+    ref.read(deliveredOrderCountProvider.notifier)
+      .fetchDeliveredOrderCount(buyerId, context);
+    final deliveredCount = ref.watch(deliveredOrderCountProvider);
+    
+    // Rest of the code remains the same, using 'user' which is now non-null
     final cartData = ref.read(cartProvider);
     final favoriteCount = ref.read(favoriteProvider);
     return Scaffold(
@@ -127,7 +144,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                           Positioned(
                             top: 66, 
                             left: 240,
-                            child: Text("15" , 
+                            child: Text(
+                              deliveredCount.toString(), 
                             style: GoogleFonts.roboto(
                               color: Colors.white, 
                               fontSize: 22 , 

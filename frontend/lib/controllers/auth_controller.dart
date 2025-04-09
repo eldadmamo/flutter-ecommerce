@@ -1,5 +1,6 @@
 import 'package:ecommerceflutter/global_variables.dart';
 import 'package:ecommerceflutter/models/user.dart';
+import 'package:ecommerceflutter/provider/delivered_order_count_provider.dart';
 import 'package:ecommerceflutter/provider/user_provider.dart';
 import 'package:ecommerceflutter/services/manage_http_response.dart';
 import 'package:ecommerceflutter/views/screens/detail/screens/checkout_screen.dart';
@@ -12,7 +13,7 @@ import 'dart:convert';
 import 'package:ecommerceflutter/views/screens/authentication_screens/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-final providerContainer = ProviderContainer();
+
 class AuthController {
   Future<void> signUpUsers({
     required BuildContext context,
@@ -55,9 +56,10 @@ class AuthController {
   }
 
   Future<void> signInUsers({
-    required context, 
+    required BuildContext context, 
     required String email, 
-    required String password
+    required String password, 
+    required WidgetRef ref 
     }) async {
      String uri = dotenv.env['API_URI'] ?? 'http://default-value.com';
     
@@ -93,8 +95,8 @@ class AuthController {
            final userJson = jsonEncode(jsonDecode(response.body)['user']);
 
            //update the application state with the user data using riverpod
-           providerContainer.read(userProvider.notifier).setUser(userJson);
-
+           ref.read(userProvider.notifier).setUser(userJson);
+           
            // store the data in sharedPreferences
            await preferences.setString('user', userJson);
 
@@ -110,14 +112,16 @@ class AuthController {
   }
 
   //Signout
-  Future<void> signoutUser({required context}) async{
+  Future<void> signoutUser({required context, required WidgetRef ref}) async{
     try{
       SharedPreferences preferences = await SharedPreferences.getInstance();
       //clear token and user sharedPreferences
       await preferences.remove('auth_token');
       await preferences.remove('user');
       //clear the user state
-      providerContainer.read(userProvider.notifier).signOut();
+      ref.read(userProvider.notifier).signOut();
+      ref.read(deliveredOrderCountProvider.notifier).resetCount();
+
       // navigate the user back to the logined
 
       Navigator.pushAndRemoveUntil(
@@ -134,7 +138,7 @@ class AuthController {
   }
 
   Future<void> updateUserLocation({
-    required context,
+    required BuildContext context,
     required String id, 
     required String state,
     required String city,
