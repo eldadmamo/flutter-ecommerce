@@ -9,7 +9,7 @@ import 'package:ecommerceflutter/views/screens/nav-screens/account_screen.dart';
 import 'package:ecommerceflutter/views/screens/nav-screens/cart_screen.dart';
 import 'package:ecommerceflutter/views/screens/nav-screens/favorite_screen.dart';
 import 'package:ecommerceflutter/views/screens/nav-screens/store_screen.dart';
-import 'package:ecommerceflutter/views/screens/nav-screens/widgets/category_screen.dart';
+import 'package:ecommerceflutter/views/screens/nav-screens/category_screen.dart';
 import 'package:ecommerceflutter/views/screens/detail/screens/widgets/subcategory_tile_widget.dart';
 import 'package:ecommerceflutter/views/screens/nav-screens/widgets/product_item_widget.dart';
 import 'package:ecommerceflutter/views/screens/nav-screens/widgets/reusable_text_widget.dart';

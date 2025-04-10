@@ -3,7 +3,7 @@ import 'package:ecommerceflutter/views/screens/nav-screens/cart_screen.dart';
 import 'package:ecommerceflutter/views/screens/nav-screens/favorite_screen.dart';
 import 'package:ecommerceflutter/views/screens/nav-screens/home_screen.dart';
 import 'package:ecommerceflutter/views/screens/nav-screens/store_screen.dart';
-import 'package:ecommerceflutter/views/screens/nav-screens/widgets/category_screen.dart';
+import 'package:ecommerceflutter/views/screens/nav-screens/category_screen.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {

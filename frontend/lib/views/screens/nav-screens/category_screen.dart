@@ -2,51 +2,60 @@ import 'package:ecommerceflutter/controllers/category_controller.dart';
 import 'package:ecommerceflutter/controllers/subcategory_controller.dart';
 import 'package:ecommerceflutter/models/category.dart';
 import 'package:ecommerceflutter/models/subcategory.dart';
+import 'package:ecommerceflutter/provider/cart_provider.dart';
+import 'package:ecommerceflutter/provider/category_provider.dart';
+import 'package:ecommerceflutter/provider/subcategry_provider.dart';
 import 'package:ecommerceflutter/views/screens/detail/screens/widgets/subcategory_tile_widget.dart';
 import 'package:ecommerceflutter/views/screens/nav-screens/widgets/header-widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class CategoryScreen extends StatefulWidget {
+class CategoryScreen extends ConsumerStatefulWidget {
   const CategoryScreen({super.key});
 
   @override
-  State<CategoryScreen> createState() => _CategoryScreenState();
+  ConsumerState<CategoryScreen> createState() => _CategoryScreenState();
 }
 
-class _CategoryScreenState extends State<CategoryScreen> {
-  late Future<List<Categorys>> futureCategories;
-  Categorys ? _selectedCategory;
-  List<Subcategory> _subcategories = [];
-  final SubcategoryController _subcategoryController = SubcategoryController();
-  @override
+class _CategoryScreenState extends ConsumerState<CategoryScreen> {
+  Categorys? _selectedCategory;
+
+  @override 
   void initState(){
     super.initState();
-    futureCategories = CategoryController().loadCategories();
-    //categories are loaded process then 
-    futureCategories.then((categories) {
-      // iterate through the categories to find the "Fashion" category
-      for(var category in categories){
-        if (category.name == "Fashion"){
-          setState(() {
-            _selectedCategory = category;
-          });
-          _loadSubcategories(category.name);
-        }
+
+    //load categories initially 
+   _fetchCategories();
+  }
+  
+  Future<void> _fetchCategories()async{
+    final categories = await CategoryController().loadCategories();
+    ref.read(categoryProvider.notifier).setCategories(categories);
+
+    //set the default selected category (e.g) "Fashion"
+    for(var category in categories){
+      if(category.name=="Fashion"){
+        setState(() {
+          _selectedCategory = category;
+        });
+
+        //load subcategories fr the defualt category
+        _fetchSubcategories(category.name);
       }
-    });
+    }
   }
 
-// load subcategories based on the categoryNames
-  Future<void> _loadSubcategories(String categoryName) async{
-    final subcategories =  await _subcategoryController.getSubCategoriesByCategoryName(categoryName);
-    setState(() {
-      _subcategories = subcategories;
-    });
+  Future<void> _fetchSubcategories(String categoryName)async{
+    final subcategories  = await SubcategoryController().getSubCategoriesByCategoryName(categoryName);
+    ref.read(subcategoryProvider.notifier).setSubcategoties(subcategories);
+
   }
 
   @override
   Widget build(BuildContext context) {
+    final categories = ref.watch(categoryProvider);
+    final subcategories = ref.watch(subcategoryProvider);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 20),
@@ -60,19 +69,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
             flex: 2, 
             child: Container(
               color: Colors.grey.shade200,
-              child: FutureBuilder(
-                future: futureCategories, 
-                builder: (context, snapshot){
-                  if(snapshot.connectionState == ConnectionState.waiting){
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if(snapshot.hasError) {
-                    return Center(child: Text('Error : ${snapshot.error}'),
-                    );
-                  } else {
-                    final categories = snapshot.data!;
-                    return ListView.builder(
+              child: ListView.builder(
                       scrollDirection: Axis.vertical,
                       itemCount: categories.length,
                       itemBuilder: (context, index){
@@ -82,7 +79,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                           setState(() {
                             _selectedCategory = category;
                           });
-                          _loadSubcategories(category.name);
+                          _fetchSubcategories(category.name);
                           print(category.name);
                         },
                         title: Text(
@@ -95,10 +92,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                           )
                        );
                       }
-                      );
-                  }
-                }
-              ),
+                      )
             ),
             ),
             //Right Side - Display details 
@@ -131,11 +125,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
                         ),
                       ),
                     ),
-                    _subcategories.isNotEmpty ?
+                    subcategories.isNotEmpty ?
                     GridView.builder(
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: _subcategories.length,
+                      itemCount: subcategories.length,
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3, 
                         mainAxisSpacing: 4, 
@@ -143,7 +137,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                         childAspectRatio: 2/3
                        ), 
                       itemBuilder: (context, index){
-                        final subcategory = _subcategories[index];
+                        final subcategory = subcategories[index];
                 
                         return SubcategoryTileWidget(image: subcategory.image, title: subcategory.subCategoryName);
                       }

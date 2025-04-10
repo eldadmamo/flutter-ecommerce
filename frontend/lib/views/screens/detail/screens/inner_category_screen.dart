@@ -8,7 +8,7 @@ import 'package:ecommerceflutter/views/screens/nav-screens/account_screen.dart';
 import 'package:ecommerceflutter/views/screens/nav-screens/cart_screen.dart';
 import 'package:ecommerceflutter/views/screens/nav-screens/favorite_screen.dart';
 import 'package:ecommerceflutter/views/screens/nav-screens/store_screen.dart';
-import 'package:ecommerceflutter/views/screens/nav-screens/widgets/category_screen.dart';
+import 'package:ecommerceflutter/views/screens/nav-screens/category_screen.dart';
 import 'package:flutter/material.dart';
 
 
