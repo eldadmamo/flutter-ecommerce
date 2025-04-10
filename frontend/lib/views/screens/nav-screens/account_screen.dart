@@ -18,6 +18,63 @@ class AccountScreen extends ConsumerStatefulWidget {
 }
 
 class _AccountScreenState extends ConsumerState<AccountScreen> {
+  final AuthController _authController = AuthController();
+
+  //show signout dialog
+  void showSignOutDialog(BuildContext context){
+    showDialog(context: context, builder: (BuildContext context){
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20)
+        ),
+        title: Text('Are you sure?', 
+        style: GoogleFonts.montserrat(
+          fontWeight: FontWeight.bold, 
+          fontSize: 20
+         ),
+        ),
+        content: Text('Do you really want to log out?', 
+        style: GoogleFonts.montserrat(
+          fontSize: 16, 
+          color: Colors.grey.shade700
+        ),
+        ),
+        actions: [
+          TextButton(onPressed: (){
+            Navigator.of(context).pop();
+          }, 
+          child: Text('Cancel' ,
+          style: GoogleFonts.montserrat( 
+            fontSize: 16, 
+            color: Colors.grey
+          ),
+          )
+          ), 
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.redAccent, 
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10)
+              )
+            ),
+            onPressed: ()async{
+              await _authController.signoutUser(
+                  context: context, 
+                   ref: ref
+                );
+            }, 
+            child: Text("Logout", 
+            style: GoogleFonts.montserrat(
+              fontSize: 16, 
+              fontWeight: FontWeight.bold,
+              color: Colors.white
+            ),
+            )
+          )
+        ],
+      );
+    });
+  }
   @override
   Widget build(BuildContext context) {
     // Read the user first
@@ -360,7 +417,9 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               height: 10,
             ),
             ListTile(
-              onTap: (){},
+              onTap: ()async{
+                showSignOutDialog(context);
+              },
               leading: Image.asset(
                 'assets/icons/logout.png',
               ),
