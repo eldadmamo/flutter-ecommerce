@@ -5,6 +5,7 @@ import 'package:ecommerceflutter/models/subcategory.dart';
 import 'package:ecommerceflutter/provider/cart_provider.dart';
 import 'package:ecommerceflutter/provider/category_provider.dart';
 import 'package:ecommerceflutter/provider/subcategry_provider.dart';
+import 'package:ecommerceflutter/views/screens/detail/screens/subcategory_product_screen.dart';
 import 'package:ecommerceflutter/views/screens/detail/screens/widgets/subcategory_tile_widget.dart';
 import 'package:ecommerceflutter/views/screens/nav-screens/widgets/header-widget.dart';
 import 'package:flutter/material.dart';
@@ -139,7 +140,16 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen> {
                       itemBuilder: (context, index){
                         final subcategory = subcategories[index];
                 
-                        return SubcategoryTileWidget(image: subcategory.image, title: subcategory.subCategoryName);
+                        return GestureDetector(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context){
+                              return SubcategoryProductScreen(subcategory: subcategory); 
+                            }));
+                          },
+                          child: SubcategoryTileWidget(
+                            image: subcategory.image, 
+                            title: subcategory.subCategoryName
+                          ));
                       }
                     ): 
                     Padding(

@@ -10,7 +10,7 @@ const productRouter = require('./routes/product')
 const productReviewRouter =require('./routes/product_review')
 const vendorRouter = require('./routes/vendor')
 const orderRouter = require('./routes/order')
-const PORT = 3000;
+const PORT = process.env.PORT;
 
 
 const app = express();
@@ -25,7 +25,7 @@ app.use(productReviewRouter);
 app.use(vendorRouter);
 app.use(orderRouter);
  
-const DB = "mongodb://127.0.0.1:27017/flutter"
+const DB = process.env.MONGODB;
 
 
 mongoose.connect(DB).then(() => { 

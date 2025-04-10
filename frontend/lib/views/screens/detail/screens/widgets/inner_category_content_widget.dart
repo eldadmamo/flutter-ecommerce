@@ -3,6 +3,7 @@ import 'package:ecommerceflutter/controllers/subcategory_controller.dart';
 import 'package:ecommerceflutter/models/category.dart';
 import 'package:ecommerceflutter/models/product.dart';
 import 'package:ecommerceflutter/models/subcategory.dart';
+import 'package:ecommerceflutter/views/screens/detail/screens/subcategory_product_screen.dart';
 import 'package:ecommerceflutter/views/screens/detail/screens/widgets/inner_banner-widget.dart';
 import 'package:ecommerceflutter/views/screens/detail/screens/widgets/inner_header_widget.dart';
 import 'package:ecommerceflutter/views/screens/nav-screens/account_screen.dart';
@@ -92,10 +93,17 @@ class _InnerCategoryContentWidgetState extends State<InnerCategoryContentWidget>
                   ? subcategories.length: end
                   )
                   .map((subcategories) => 
-                  SubcategoryTileWidget(
-                    image:subcategories.image, 
-                    title: subcategories.subCategoryName
-                    )
+                  GestureDetector(
+                    onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context){
+                              return SubcategoryProductScreen(subcategory: subcategories); 
+                            }));
+                      },
+                    child: SubcategoryTileWidget(
+                      image:subcategories.image, 
+                      title: subcategories.subCategoryName
+                      ),
+                  )
                   ).toList(),
                 ),
                 );

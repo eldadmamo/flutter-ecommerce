@@ -54,4 +54,12 @@ Content-Type: application/json
 Accept: application/json
 withCredentials: true
 
+###
+
+GET {{baseUrl}}/{{urlPath}}/products-by-subcategories/accessories
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+
 

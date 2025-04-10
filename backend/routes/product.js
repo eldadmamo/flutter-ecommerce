@@ -96,6 +96,86 @@ productRouter.get('/api/top-rated-products', async (req,res) => {
     }catch(e){
         return res.status(500).json({error:e.message})
     }
+});
+
+productRouter.get('/api/products-by-subcategories/:subCategory', async (req,res)=> {
+    try{
+        const {subCategory} = req.params;
+       const products = await Product.find({subCategory: subCategory});
+       if(!products || products.length == 0){
+        return res.status(404).json({msg: "No Products found in this subcategory"})
+       } 
+       return res.status(200).json(products);
+    }catch(error){
+       return res.status(500).json({error: e.message});  
+    }
+})
+
+//Route for searching products by name or description
+productRouter.get('/api/search-products', async(req,res)=>{
+    try{
+
+        const {query} = req.params;
+
+        if(!query){
+            return res.status(400).json({msg: "Query parameter required"})
+        }
+
+        const products = await Product.find({
+            $or: [
+                // Regex will match any productName containing, the query String, 
+                // For example, if the user search for "apple", the regex will check
+                // if "apple" is part of any productName, so products name "Green Apple pie",
+                // or "Fresh Apples", would all match because they contain the word "apple"
+              {productName: {
+                $regex: query,
+                $options: 'i'
+               }},
+              {description: {
+                $regex: query,
+                $options: 'i'
+               }},
+            ]
+        });
+
+        // check if any products were found, if not product match the query
+        // return a 404 status code with a message
+        if(!products || products.length==0){
+            return res.status(404).json({msg: "No Product found matching the query"})
+        }
+
+        return res.status(200).json(products);
+    }catch(error){
+        return res.status(500).json({error: e.message})
+    }
+})
+
+productRouter.put("/api/edit-product/:productId",auth, vendorAuth, async (req,res)=> {
+    try{
+        //Extract product Id from the request parameter
+        const {productId} = req.params;
+        const product = await Product.find(productId);
+        if(!product){
+            return res.status(404).json({msg: "Product not found"});
+        }
+        if(product.vendorId.toString()!== req.user.id){
+            return res.status(403).json({msg: "Unauthorized to edit the product"})
+        }
+
+        //Destructive req.body to exclude vendorId
+
+        const {vendorId, ...updateData} = req.body;
+        
+       const updateProduct = await Product.findByIdAndUpdate(
+            productId,
+            {$set: updateData}, //update only fields in the updateData
+            {new: true}
+        )
+
+        return res.status(200).json(updateProduct);
+    }catch(e){
+        return res.status(500).json({error: e.message});
+    }
 })
 
 

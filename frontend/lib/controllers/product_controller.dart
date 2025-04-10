@@ -120,4 +120,32 @@ class ProductController {
       throw Exception('Error related  products $e');
     }
    }
+
+
+   Future<List<Product>> loadProductsBySubcategory(String subCategory) async{
+    try{
+      http.Response response =  await http.get(Uri.parse('$uri/api/products-by-subcategories/$subCategory'),
+      headers: <String, String> {
+        "Content-Type":"application/json; charset=UTF-8"
+      });
+
+      print(response.body);
+
+      if(response.statusCode==200){
+     final List<dynamic> data = json.decode(response.body) as List<dynamic>;
+
+    List<Product> realtedProducts =  data
+    .map((product) => Product.fromMap(product as Map<String,dynamic>))
+    .toList();
+    return realtedProducts;
+
+    } else if(response.statusCode == 404){
+      return [];
+    } else {
+      throw Exception('Failed to load subcategory products');
+    }
+    }catch(e){
+      throw Exception('Error subcategories products $e');
+    }
+   }
 }
