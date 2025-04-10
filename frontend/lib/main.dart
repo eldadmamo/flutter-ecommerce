@@ -2,6 +2,7 @@ import 'package:ecommerceflutter/provider/user_provider.dart';
 import 'package:ecommerceflutter/views/screens/authentication_screens/login_screen.dart';
 import 'package:ecommerceflutter/views/screens/main_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,6 +38,8 @@ class MyApp extends ConsumerWidget {
   }
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',

@@ -22,6 +22,8 @@ class BannerController {
 
       
       return banners;
+      } else if(response.statusCode == 404){
+      return [];
       } else {
         throw Exception('Failed to load Banners');
       }

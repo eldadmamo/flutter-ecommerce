@@ -26,7 +26,10 @@ class ProductController {
           .toList();
       return products;
 
-    } else {
+    } else if(response.statusCode == 404) {
+      return [];
+    } 
+    else {
       throw Exception('Failed to load popular products');
     }
 
@@ -52,6 +55,8 @@ class ProductController {
     .toList();
     return products;
 
+    } else if(response.statusCode == 404){
+      return [];
     } else {
       throw Exception('Failed to load popular products');
     }
@@ -78,6 +83,8 @@ class ProductController {
     .toList();
     return realtedProducts;
 
+    } else if(response.statusCode == 404){
+      return [];
     } else {
       throw Exception('Failed to load realted products');
     }
@@ -104,6 +111,8 @@ class ProductController {
     .toList();
     return topRatedProducts;
 
+    } else if(response.statusCode == 404){
+      return [];
     } else {
       throw Exception('Failed to load top Rated products');
     }
