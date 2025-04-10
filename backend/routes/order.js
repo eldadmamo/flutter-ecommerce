@@ -2,6 +2,7 @@ const express = require('express');
 const orderRouter = express.Router();
 const Order = require('../models/order');
 const {auth,vendorAuth} = require('../middleware/auth')
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 //Post router for createing orders
 
@@ -20,6 +21,68 @@ orderRouter.post('/api/orders',auth, async (req, res) => {
         res.status(500).json({error: e.message});
     }
 })
+
+//Payment api
+orderRouter.post('/api/payment', async (req,res) => {
+    try{
+      const {orderId, paymentMethodId, currency='usd'} = req.body;
+      //validate the presence of the required fields
+      if(!orderId || !paymentMethodId || !currency){
+        return res.status(400).json({msg: "Missing required fields"})
+      }  
+
+      // Query for the order by orderId
+      const order = await Order.findById(orderId);
+      if(!order){
+        console.log("order not found", orderId);
+        return res.status(404).json({msg:"Order not found"})
+      }
+
+      // calculate 
+      const totalAmount = order.productPrice * order.quantity;
+
+      //Ensure the amount is at least $0.50 usd or its equivalent
+      const minimumAmount = 0.50;
+      if(totalAmount< minimumAmount){
+        return res.status(400).json({error: 'Amount must be at least $0.50 USD'})
+      }
+      //con
+
+      const amountInCents = Math.round(totalAmount * 100);
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amountInCents, 
+        currency: currency,
+        payment_method: paymentMethodId,
+        automatic_payment_methods:{enabled:true},
+      });
+
+      return res.json({
+        status: "success",
+        paymentIntentId: paymentIntent.id,
+        amount: paymentIntent.amount/100, 
+        current: paymentIntent.currency,
+      })
+
+    }catch(e){
+        return res.status(500).json({error:e.message});
+    }
+})
+
+orderRouter.post('/api/payment-intent', async(req,res)=> {
+    try{
+        const {amount, currency} = req.body;
+
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount, 
+            currency
+        });
+
+        return res.status(200).json(paymentIntent);
+    }catch(e){
+        return res.status(500).json({error: e.message})
+    }
+});
 
 //Get Route for fetching 
 

@@ -67,7 +67,19 @@ withCredentials: true
 
 
 
+###
 
+
+POST {{baseUrl}}/{{urlPath}}/payment
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "orderId": "67f006189abfbc343a767b38",
+  "paymentMethodId": "pm_card_visa",
+  "currency":"usd"
+}
 
 
 
