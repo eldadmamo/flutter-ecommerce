@@ -69,7 +69,7 @@ orderRouter.post('/api/payment', async (req,res) => {
     }
 })
 
-orderRouter.post('/api/payment-intent', async(req,res)=> {
+orderRouter.post('/api/payment-intent', auth, async(req,res)=> {
     try{
         const {amount, currency} = req.body;
 

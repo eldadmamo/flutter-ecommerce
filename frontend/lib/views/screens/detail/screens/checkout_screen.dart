@@ -7,6 +7,7 @@ import 'package:ecommerceflutter/views/screens/detail/screens/shipping_address_s
 import 'package:ecommerceflutter/views/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CheckoutScreen extends ConsumerStatefulWidget {
@@ -19,6 +20,88 @@ class CheckoutScreen extends ConsumerStatefulWidget {
 class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   String selectedPaymentMethod = 'stripe';
   final OrderController _orderController = OrderController();
+  bool isLoading = false;
+  
+
+  Future<void> handleStripePayment(BuildContext context) async {
+    // fetch the cart data from riverpod provider
+    final cartData = ref.read(cartProvider);
+    //fetch the user data from riverpod provider
+    final user = ref.read(userProvider);
+
+    //check if cart is empty
+    if(cartData.isEmpty){
+      showSnackBar(context, "Your cart is empty");
+      return;
+    }
+
+    //check if user is null
+    if(user==null){
+      showSnackBar(context, "User Information is missing");
+      return;
+    }
+
+    try{
+      setState(() {
+        isLoading = true;
+      });
+      //calculate the total amount for all items in cart
+      final totalAmount = cartData.values
+        .fold(0.0, (sum,item)=> sum + (item.quantity* item.productPrice));
+      //check if the totalAmount is a valid amount
+      if(totalAmount<=0){
+        showSnackBar(context, "Total amount must be greater than zero");
+        return;
+      }
+      //create a payment intent with the calculated amount and currency
+      final paymentIntent = await _orderController.createPaymentIntent(
+        amount: (totalAmount*100).toInt(), 
+        currency: 'usd'
+      );
+
+      //initialize the stripe payment sheet with the payment intent details
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+        paymentIntentClientSecret: paymentIntent['client_secret'], 
+        merchantDisplayName: 'Maclay Store'
+        ));
+
+      //present the payment sheet to the user
+      await Stripe.instance.presentPaymentSheet();
+
+      //upload each cart item as an order to the server
+      for(final entry in cartData.entries){
+        final item = entry.value;
+
+        await _orderController.uploadOrders(
+                  id: '', 
+                  fullName: ref.read(userProvider)!.fullName, 
+                  email: ref.read(userProvider)!.email, 
+                  state: ref.read(userProvider)!.state,
+                  city: ref.read(userProvider)!.city, 
+                  locality: ref.read(userProvider)!.locality, 
+                  productName: item.productName, 
+                  productPrice: item.productPrice, 
+                  quantity: item.quantity, 
+                  category: item.category, 
+                  image: item.image[0], 
+                  buyerId: ref.read(userProvider)!.id, 
+                  vendorId: item.vendorId, 
+                  processing: true, 
+                  delivered: false, 
+                  context: context
+        );
+      }
+    }catch(e){
+      showSnackBar(context, "Payment Failed: $e");
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final cartData = ref.read(cartProvider);
@@ -386,7 +469,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         : InkWell(
           onTap: () async{
             if(selectedPaymentMethod=='stripe'){
-
+              handleStripePayment(context);
             } else {
               await Future.forEach(_cartProvider.getCartItems.entries, (entry){
                 var item = entry.value;
@@ -427,7 +510,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               borderRadius: BorderRadius.circular(15)
             ),
             child: Center(
-              child: Text(
+              child: isLoading
+              ? const CircularProgressIndicator(): 
+              Text(
               selectedPaymentMethod == 'stripe'? 'Pay Now': "Place Order",
               style: GoogleFonts.montserrat(
                 color: Colors.white,

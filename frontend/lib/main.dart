@@ -5,15 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Ensure Flutter bindings are initialized
+  
   await dotenv.load(); // Load the .env file
+
+  Stripe.publishableKey = dotenv.env['PUBLISHABLE_KEY']!;
 
   String uri = dotenv.env['API_URI'] ?? "http://default-value.com";
   
-
+  await Stripe.instance.applySettings();
   runApp(ProviderScope(child: const MyApp()));
   
 }
