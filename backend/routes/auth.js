@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 
 const authRouter = express.Router();
+const sendWelcomeEmail = require('../helpers/send_email');
 
 
 authRouter.post('/api/signup', async (req,res) => {
@@ -20,6 +21,7 @@ authRouter.post('/api/signup', async (req,res) => {
            let user = new User({fullName, email, password: hashedPassword});
            user = await user.save()
            res.json({user});
+           sendWelcomeEmail(email);
         }
     }catch(e){
         res.status(500).json({error: e.message});
