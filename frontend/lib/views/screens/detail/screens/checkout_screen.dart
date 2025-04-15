@@ -9,12 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/foundation.dart';
+
 
 class CheckoutScreen extends ConsumerStatefulWidget {
   const CheckoutScreen({super.key});
 
   @override
   ConsumerState<CheckoutScreen> createState() => _CheckoutScreenState();
+  
 }
 
 class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
@@ -53,7 +56,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         showSnackBar(context, "Total amount must be greater than zero");
         return;
       }
-      //create a payment intent with the calculated amount and currency
+
+       
+       //create a payment intent with the calculated amount and currency
       final paymentIntent = await _orderController.createPaymentIntent(
         amount: (totalAmount*100).toInt(), 
         currency: 'usd'
@@ -63,11 +68,13 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
         paymentIntentClientSecret: paymentIntent['client_secret'], 
-        merchantDisplayName: 'Maclay Store'
+        merchantDisplayName: 'Destamerch'
         ));
 
       //present the payment sheet to the user
       await Stripe.instance.presentPaymentSheet();
+    
+     
 
       //upload each cart item as an order to the server
       for(final entry in cartData.entries){
@@ -469,7 +476,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         : InkWell(
           onTap: () async{
             if(selectedPaymentMethod=='stripe'){
-              handleStripePayment(context);
+             await handleStripePayment(context);
             } else {
               await Future.forEach(_cartProvider.getCartItems.entries, (entry){
                 var item = entry.value;

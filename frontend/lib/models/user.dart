@@ -11,8 +11,11 @@ class User {
   final String locality;
   final String password;
   final String token;
+  final String phoneNumber; // Add this
+  final String postalCode;
 
-  User({required this.id, required this.fullName, required this.email, required this.state, required this.city, required this.locality, required this.password , required this.token});
+  User({required this.id, required this.fullName, required this.email, required this.state, required this.city, required this.locality, required this.password , required this.token, this.phoneNumber = '', // Initialize with empty string
+    this.postalCode = ''});
 
   Map<String, dynamic> toMap(){
     return <String, dynamic>{
@@ -23,7 +26,9 @@ class User {
       "city": city,
       "locality": locality,
       "password": password,
-      "token": token
+      "token": token,
+      "phoneNumber": phoneNumber, 
+      "postalCode": postalCode,
     };
   }
 
@@ -48,6 +53,8 @@ class User {
       locality: map['locality'] as String? ?? "", 
       password: map['password'] as String? ?? "",
       token: map['token'] as String? ?? "",
+      phoneNumber: map['phoneNumber'] as String? ?? "", 
+      postalCode: map['postalCode'] as String? ?? "", 
     );
   }
 
