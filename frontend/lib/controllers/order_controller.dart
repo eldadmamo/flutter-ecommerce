@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:ecommerceflutter/global_variables.dart';
 import 'package:ecommerceflutter/models/order.dart';
 import 'package:ecommerceflutter/services/manage_http_response.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,6 +24,9 @@ class OrderController {
   required String vendorId,
   required bool processing,
   required bool delivered,
+  required String paymentStatus,
+  required String paymentIntentId,
+  required String paymentMethod,
   required context 
   })async{
     try{
@@ -43,7 +47,10 @@ class OrderController {
         buyerId: buyerId, 
         vendorId: vendorId, 
         processing: processing, 
-        delivered: delivered
+        delivered: delivered, 
+        paymentStatus: paymentStatus,
+        paymentIntentId: paymentIntentId,
+        paymentMethod: paymentMethod,
         );
 
         http.Response response =  await http.post(Uri.parse('$uri/api/orders'),
@@ -153,4 +160,30 @@ class OrderController {
       throw Exception("Error Create Payment Intent:$e");
     }
   }
+
+  //retrieve payemnt intent to know if the payment was successfull or not
+
+  Future<Map<String, dynamic>> getPaymentIntentStatus({
+    required BuildContext context, 
+    required String paymentIntentId
+  })async{
+    try{
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String? token = preferences.getString('auth_token');
+
+     http.Response response = await http.get(Uri.parse('$uri/api/payment-intent/$paymentIntentId'), 
+      headers: <String,String> {
+        "Content-Type": "application/json; charset=UTF-8",
+         "x-auth-token": token!
+      },
+      );
+
+      if(response.statusCode==200){
+        return jsonDecode(response.body);
+      } else {
+        throw Exception("Failed to create payment intent ${response.body}");      }
+    }catch(e){
+      throw Exception("Failed to get payment payment $e");
+    }
+  } 
 }

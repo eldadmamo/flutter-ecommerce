@@ -8,12 +8,19 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 orderRouter.post('/api/orders',auth, async (req, res) => {
     try{
-        const {fullName, email,state,city,locality,productName,productPrice,quantity,category,image,buyerId,vendorId} = req.body;
+        const {fullName, email,state,city,locality,productName,productPrice,quantity,category,image,buyerId,vendorId ,
+            paymentStatus,
+            paymentIntentId,
+            paymentMethod,
+        } = req.body;
         const createdAt = new Date().getMilliseconds();
 
         const order = new Order({
             fullName,
-            email,state,city,locality,productName,productPrice,quantity,category,image,buyerId,vendorId, createdAt
+            email,state,city,locality,productName,productPrice,quantity,category,image,buyerId,vendorId, createdAt,
+            paymentStatus,
+            paymentIntentId,
+            paymentMethod,
         });
          await order.save();
          return res.status(201).json(order);
@@ -83,6 +90,15 @@ orderRouter.post('/api/payment-intent', auth, async(req,res)=> {
         return res.status(500).json({error: e.message})
     }
 });
+
+orderRouter.get('/api/payment-intent/:id', auth, async (req,res) => {
+    try{
+        const paymentIntent = await stripe.paymentIntents.retrieve(req.params.id);
+        return res.status(200).json(paymentIntent);
+    }catch(e){
+        res.status(500).json({error: e.message})
+    }
+})
 
 //Get Route for fetching 
 

@@ -73,11 +73,17 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
       //present the payment sheet to the user
       await Stripe.instance.presentPaymentSheet();
-    
-     
 
-      //upload each cart item as an order to the server
-      for(final entry in cartData.entries){
+
+      final paymentIntentStatus = await _orderController.getPaymentIntentStatus(
+        context: context, 
+        paymentIntentId: paymentIntent['id']
+      );
+  
+     //upload each cart item as an order to the server
+
+       if(paymentIntentStatus['status'] == 'succeeded'){
+        for(final entry in cartData.entries){
         final item = entry.value;
 
         await _orderController.uploadOrders(
@@ -96,9 +102,15 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   vendorId: item.vendorId, 
                   processing: true, 
                   delivered: false, 
-                  context: context
+                  context: context,
+                  paymentStatus: paymentIntentStatus['status'],
+                  paymentIntentId: paymentIntentStatus['id'],
+                  paymentMethod: 'card',
         );
       }
+       }
+      //upload each cart item as an order to the server
+      
     }catch(e){
       showSnackBar(context, "Payment Failed: $e");
     } finally {
@@ -496,7 +508,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   vendorId: item.vendorId, 
                   processing: true, 
                   delivered: false, 
-                  context: context
+                  context: context,
+                  paymentStatus: "Pending",
+                  paymentIntentId: "cod",
+                  paymentMethod: 'cod',
                   );
               }).then((value){
                 _cartProvider.clearCart();

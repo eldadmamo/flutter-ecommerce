@@ -82,4 +82,26 @@ withCredentials: true
 }
 
 
+###
+
+POST {{baseUrl}}/{{urlPath}}/payment-intent
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "amount": 3000,
+  "currency": "usd" 
+}
+
+###
+
+GET {{baseUrl}}/{{urlPath}}/payment-intent/pi_3RE96ZL1p85UlzvM19t4XG89
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+
+
+
 
