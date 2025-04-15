@@ -24,10 +24,22 @@ Accept: application/json
 withCredentials: true
 
 {
-  "email": "eldadf456@gmail.com" ,
+  "email": "eldadfikre456@gmail.com" ,
   "password":"12345678"
 }
 
+###
+
+
+POST {{baseUrl}}/{{urlPath}}/verify-otp
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "email": "eldadfikre456@gmail.com",
+  "otp": "864886"
+}
 
 ###
 

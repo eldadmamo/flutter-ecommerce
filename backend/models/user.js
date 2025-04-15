@@ -39,6 +39,11 @@ const mongoose = require('mongoose');
             },
             message: "Password must be at least 8 characters" 
         }
+    }, 
+
+    isVerified:{
+        type: Boolean,
+        default: false 
     }
  })
 

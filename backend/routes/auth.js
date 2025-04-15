@@ -4,8 +4,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 
 const authRouter = express.Router();
-const sendWelcomeEmail = require('../helpers/send_email');
+const sendOTPEmail = require('../helpers/send_email');
+const crypto = require('crypto');
 
+
+const otpStore = new Map();
 
 authRouter.post('/api/signup', async (req,res) => {
     try{
@@ -18,10 +21,22 @@ authRouter.post('/api/signup', async (req,res) => {
 
            const salt = await bcrypt.genSalt(10);
            const hashedPassword = await bcrypt.hash(password, salt);
-           let user = new User({fullName, email, password: hashedPassword});
-           user = await user.save()
-           res.json({user});
-           sendWelcomeEmail(email);
+           //Generate OTP
+           const otp = crypto.randomInt(100000,999999);
+
+           //Save otp in the temporary store with email as key
+           otpStore.set(email, {otp, expiresAt: Date.now()+ 30*60*1000}); //expires in 10 minutes
+
+
+           let user = new User({fullName, email, password: hashedPassword, isVerified: false});
+           user = await user.save();
+
+
+
+           // Send OTP via email
+          emailResponse = await sendOTPEmail(email, otp);
+
+           res.status(201).json({msg: "Sign Up Successful , OTP send to email", emailResponse})
         }
     }catch(e){
         res.status(500).json({error: e.message});
@@ -36,7 +51,14 @@ authRouter.post('/api/signin', async (req,res) => {
         const findUser = await User.findOne({email});
         if(!findUser){
             return res.status(400).json({msg: "user not Found with this email"});
-        } else {
+            
+        } //check if user is verified
+        
+        if(!findUser.isVerified){
+            return res.status(403).json({msg: "email not verified. Please verify your email to sign in"})
+        }
+        
+        else {
            const isMatch = await bcrypt.compare(password,findUser.password);
            if(!isMatch){
             return res.status(400).json({msg: "incorrect password"})
@@ -52,6 +74,48 @@ authRouter.post('/api/signin', async (req,res) => {
         }
     }catch(e){
         res.status(500).json({error: e.message})
+    }
+})
+
+//verify OTP Route
+authRouter.post('/api/verify-otp', async (req,res)=> {
+    try{
+        const {email, otp } = req.body;
+
+        //check if OTP exist and if it is valid
+
+        const storedOtpData = otpStore.get(email);
+        if(!storedOtpData){
+            return res.status(400).json({msg: "OTP not found or expired"});
+        }
+
+        if(storedOtpData.otp!==Number(otp)){
+            return res.status(400).json({msg: "invalid OTP"})
+        }
+
+        // check if OTP has expired
+
+        if(storedOtpData.expiresAt < Date.now()){
+            otpStore.delete(email);
+            return res.status(400).json({msg: "OTP has expired"})
+        } 
+
+        //Mark user as verified
+
+        const user =  await User.findOneAndUpdate({email}, {isVerified: true}, {new: true});
+
+        if(!user){
+            return res.status(400).json({msg: "User not found"})
+        }
+
+        otpStore.delete(email);
+
+        //
+
+        return res.status(200).json({msg: "Email verification successfully", user});
+        
+    }catch(e){
+        return res.status(500).json({error: e.message});
     }
 })
 

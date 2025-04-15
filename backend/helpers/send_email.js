@@ -17,20 +17,26 @@ const client = new SESClient({
 
 //Function to generate simple HTML content for welcome email
 
-const generateWelcomeEmailHtml = () => {
+const generateOTPEmailHtml = (otp) => {
     return `
     <html>
       <body>
          <h1>Welcome to ${process.env.APP_NAME}</h1>
+         <p>Your One-Time password (OTP) for email verification is : </p>
+         <p>${otp}</p>
+         <p>Please enter this OTP to verify your email address. This code is valid for the next 10 minutes</p>
+         <p>if you did not request this please ignore this email or contact our support team immediately </p>
+         
       </body>
     </html>
     `
 };
 
-const sendWelcomeEmail = async(email) => {
+const sendOTPEmail = async(email, otp) => {
     const params = {
         Source : process.env.EMAIL_FROM,
-        ReplyToAddress : [process.env.EMAIL_TO], 
+        ReplyToAddress : [process.env.EMAIL_TO],
+         
 
         Destination: {
             ToAddresses: [email],
@@ -40,13 +46,13 @@ const sendWelcomeEmail = async(email) => {
             Body: {
                 Html:{
                     Charset: "UTF-8",
-                    Data: generateWelcomeEmailHtml()
+                    Data: generateOTPEmailHtml(otp)
                 }
             }, 
 
             Subject: {
                 Charset: "UTF-8",
-                Data: `Welcome to ${process.env.APP_NAME}` 
+                Data: `Destamerch Email Verification` 
             }
         }
     };
@@ -62,4 +68,4 @@ const sendWelcomeEmail = async(email) => {
     }
 };
 
-module.exports = sendWelcomeEmail;
+module.exports = sendOTPEmail;
