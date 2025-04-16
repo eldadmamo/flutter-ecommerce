@@ -3,6 +3,7 @@ import 'package:ecommerceflutter/models/user.dart';
 import 'package:ecommerceflutter/provider/delivered_order_count_provider.dart';
 import 'package:ecommerceflutter/provider/user_provider.dart';
 import 'package:ecommerceflutter/services/manage_http_response.dart';
+import 'package:ecommerceflutter/views/screens/authentication_screens/otp_screen.dart';
 import 'package:ecommerceflutter/views/screens/detail/screens/checkout_screen.dart';
 import 'package:ecommerceflutter/views/screens/main_screen.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +48,10 @@ class AuthController {
       context: context, 
       onSuccess: (){
         Navigator.push(context, 
-          MaterialPageRoute(builder: (context) => const LoginScreen()));
+          MaterialPageRoute(builder: (context) {
+          return OtpScreen(email:email);
+          }
+          ));
       showSnackBar(context, 'Account has been created for you');
       });
     }catch(e){
@@ -179,6 +183,39 @@ class AuthController {
 
     }catch(e){
       showSnackBar(context, 'Error updating location');
+    }
+  }
+  Future<void> verifyOtp({
+    required BuildContext context, 
+    required String email,
+    required String otp 
+  })async{
+    try{
+    http.Response response = await http.post(Uri.parse('$uri/api/verify-otp'), 
+      body : jsonEncode({
+        "email": email,
+        "otp": otp
+      }), 
+      headers: <String, String> {
+        "Content-Type" : "application/json; charset=UTF-8"
+      }
+      );
+
+      manageHttpResponse(
+        response: response, 
+        context: context, 
+        onSuccess: (){
+          Navigator.pushAndRemoveUntil(
+          context, 
+          MaterialPageRoute(builder: (context) {
+             return const LoginScreen();
+             }), 
+          (route) => false);
+
+          showSnackBar(context, "Account verified . Please Login in");
+        });
+    }catch(e){
+      showSnackBar(context, "Error veified OTP: $e");
     }
   }
 }

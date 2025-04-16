@@ -11,7 +11,7 @@ withCredentials: true
 
 {
   "fullName":"eldad",
-  "email": "eldadfikre456@gmail.com" ,
+  "email": "eldadf456@gmail.com" ,
   "password":"12345678"
 }
 
@@ -24,7 +24,7 @@ Accept: application/json
 withCredentials: true
 
 {
-  "email": "eldadfikre456@gmail.com" ,
+  "email": "eldadf456@gmail.com" ,
   "password":"12345678"
 }
 
@@ -37,8 +37,8 @@ Accept: application/json
 withCredentials: true
 
 {
-  "email": "eldadfikre456@gmail.com",
-  "otp": "864886"
+  "email": "eldadf456@gmail.com",
+  "otp": "982331"
 }
 
 ###
