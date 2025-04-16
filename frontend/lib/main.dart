@@ -1,3 +1,4 @@
+import 'package:ecommerceflutter/controllers/auth_controller.dart';
 import 'package:ecommerceflutter/provider/user_provider.dart';
 import 'package:ecommerceflutter/views/screens/authentication_screens/login_screen.dart';
 import 'package:ecommerceflutter/views/screens/main_screen.dart';
@@ -6,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Ensure Flutter bindings are initialized
@@ -18,52 +18,73 @@ void main() async {
   String uri = dotenv.env['API_URI'] ?? "http://default-value.com";
   
   await Stripe.instance.applySettings();
-  runApp(ProviderScope(child: const MyApp()));
+  runApp(
+    const ProviderScope(
+      child:  MyApp())
+    );
   
 }
 
-class MyApp extends ConsumerWidget {
+
+/// The root widget, now a ConsumerStatefulWidget so we can safely use `ref` in initState.
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
-  Future<void> checkTokenAndSetUser(WidgetRef ref) async  {
-    //obtain an instance of sharedPreference for local data storage
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    // Retrive the authentication token 
-   String? token = preferences.getString('auth_token');
-   String? userJson = preferences.getString('user');
-
-   // if both token and user data are available
-   if(token!=null && userJson!=null){
-    ref.read(userProvider.notifier).setUser(userJson);
-   } else {
-    ref.read(userProvider.notifier).signOut();
-   }
-  }
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends ConsumerState<MyApp> {
+  bool _initialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeUser();
+  }
+
+  Future<void> _initializeUser() async {
+    // Fetch and set user data
+    await AuthController().getUserData(context, ref);
+    if (!mounted) return; // guard against calling setState after dispose
+    setState(() {
+      _initialized = true;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Transparent status bar
     SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+      const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+    );
+
+    // While we’re loading user data, show a splash/loading screen
+    if (!_initialized) {
+      return const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        ),
+      );
+    }
+
+    // Once initialized, read the user from our provider
+    final user = ref.watch(userProvider)!;
+    final Widget homeScreen =
+        user.token.isNotEmpty ?  MainScreen() : const LoginScreen();
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'E‑Commerce Flutter',
       theme: ThemeData(
-        // This is the theme of your application.
-        
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true
+        useMaterial3: true,
       ),
-      home: FutureBuilder(
-        future: checkTokenAndSetUser(ref), 
-        builder: (context, snapshot){
-          if(snapshot.connectionState == ConnectionState.waiting){
-            return Center(child: CircularProgressIndicator(),);
-          } 
-            final user = ref.watch(userProvider);
-
-            return user!=null?MainScreen(): LoginScreen();
-        }
-      )
+      home: homeScreen,
     );
   }
 }
+
+
+

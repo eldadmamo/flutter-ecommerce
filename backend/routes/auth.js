@@ -75,13 +75,13 @@ authRouter.post('/api/signin', async (req,res) => {
 
             //set the token to expire in 1 minute
 
-             const token = jwt.sign({id:findUser._id}, "passwordKey", {expiresIn: '30m'});
+             const token = jwt.sign({id:findUser._id}, "passwordKey", {expiresIn: '1m'});
 
              //remove sensitive information
              const {password, ...userWithoutPassword} = findUser._doc; 
 
              
-             res.json({token, user: userWithoutPassword })
+             res.json({token, userWithoutPassword })
            }
         }
     }catch(e){
@@ -90,6 +90,7 @@ authRouter.post('/api/signin', async (req,res) => {
 })
 
 //check token validity
+
 authRouter.post('/tokenIsValid', async(req,res) => {
     try{
         const token = req.header("x-auth-token");
@@ -106,8 +107,10 @@ authRouter.post('/tokenIsValid', async(req,res) => {
 
      const user = await User.findById(verified.id);
 
-    if(!user)
+    if(!user){
         return res.json(false);
+    }
+        
 
     return res.json(true)
 

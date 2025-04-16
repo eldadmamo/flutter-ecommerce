@@ -65,7 +65,7 @@ class AuthController {
     required String password, 
     required WidgetRef ref 
     }) async {
-     String uri = dotenv.env['API_URI'] ?? 'http://default-value.com';
+     
     
     try{
      
@@ -85,6 +85,7 @@ class AuthController {
         response: response, 
         context: context, 
         onSuccess: () async{
+          
           //Access sharedPreferances for token and user data storage
           SharedPreferences preferences = 
             await SharedPreferences.getInstance();
@@ -93,27 +94,69 @@ class AuthController {
            String token = jsonDecode(response.body)['token'];
 
            //Store the authentication token securely in SharedPreferances
-           await preferences.setString('auth_token', token);
+          preferences.setString('auth_token', token);
 
            //Encode user data recieved from backend as json
-           final userJson = jsonEncode(jsonDecode(response.body)['user']);
+           final userJson = jsonEncode(jsonDecode(response.body));
 
            //update the application state with the user data using riverpod
-           ref.read(userProvider.notifier).setUser(userJson);
+           ref.read(userProvider.notifier).setUser(response.body);
            
            // store the data in sharedPreferences
            await preferences.setString('user', userJson);
 
-          Navigator.pushAndRemoveUntil(
+          if(ref.read(userProvider)!.token.isNotEmpty){
+            Navigator.pushAndRemoveUntil(
           context, 
-          MaterialPageRoute(builder: (context) =>  MainScreen()), 
+          MaterialPageRoute(builder: (context) {
+           return MainScreen();
+          }), 
           (route) => false);
-        showSnackBar(context, 'Logged In');
+           showSnackBar(context, 'Logged In');
+          }
+       
       });
     }catch(e){
-      print("Error $e");
+      showSnackBar(context, e.toString());  
     }
   }
+
+   getUserData(context , WidgetRef ref) async{
+    try{
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String? token = preferences.getString('auth_token');
+
+      if(token==null){
+        preferences.setString('auth_token', '');
+      }
+
+      var tokenResponse =  await http.post(Uri.parse('$uri/tokenIsValid'), 
+      headers: <String, String>{
+        "Content-Type": "application/json; charset=UTF-8",
+        "x-auth-token": token!
+        }, 
+      );
+
+      var response = jsonDecode(tokenResponse.body);
+      print(response);
+      if(response==true){
+        http.Response userResponse = await http.get(
+          Uri.parse('$uri/'), 
+         headers: <String, String>{
+           "Content-Type": "application/json; charset=UTF-8",
+           "x-auth-token": token
+        }, 
+      );
+      
+ 
+      ref.read(userProvider.notifier).setUser(userResponse.body);
+      }
+
+      
+    }catch(e){
+      showSnackBar(context, e.toString());
+    }
+   }
 
   //Signout
   Future<void> signoutUser({required context, required WidgetRef ref}) async{
