@@ -6,9 +6,9 @@ const jwt = require('jsonwebtoken')
 const vendorRouter = express.Router();
 
 
-vendorRouter.post('/api/vendor/signup', async (req,res) => {
+vendorRouter.post('/api/v2/vendor/signup', async (req,res) => {
     try{
-        const {fullName, email, password} = req.body;
+        const {fullName, email,  storeName, storeImage, storeDescription, password} = req.body;
         
         const response = await Vendor.findOne({email});
         if(response){
@@ -16,7 +16,7 @@ vendorRouter.post('/api/vendor/signup', async (req,res) => {
         } else {
            const salt = await bcrypt.genSalt(10);
            const hashedPassword = await bcrypt.hash(password, salt);
-           let vendor = new Vendor({fullName, email, password: hashedPassword});
+           let vendor = new Vendor({fullName, email, storeName, storeImage, storeDescription, password: hashedPassword});
            vendor = await vendor.save()
            res.json({vendor});
         }
@@ -27,7 +27,7 @@ vendorRouter.post('/api/vendor/signup', async (req,res) => {
 
 //signin api endpoint 
 
-vendorRouter.post('/api/vendor/signin', async (req,res) => {
+vendorRouter.post('/api/v2/vendor/signin', async (req,res) => {
     try{
         const {email, password} = req.body;
         const findUser = await Vendor.findOne({email});

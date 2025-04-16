@@ -400,19 +400,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               ),
               ),
             ),
-            const SizedBox(height: 10,),
-            ListTile(
-              onTap: (){},
-              leading: Image.asset(
-                'assets/icons/help.png',
-              ),
-              title: Text(
-              'Help', 
-              style: GoogleFonts.montserrat(
-                fontWeight: FontWeight.bold,
-               ),
-              ),
-            ),
+            
             const SizedBox(
               height: 10,
             ),
@@ -425,6 +413,25 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               ),
               title: Text(
               'Logout', 
+              style: GoogleFonts.montserrat(
+                fontWeight: FontWeight.bold,
+               ),
+              ),
+            ),
+            const SizedBox(height: 10,),
+            ListTile(
+              onTap: ()async{
+                await _authController.deleteAccount(
+                  context: context, 
+                  id: user.id, 
+                  ref: ref
+                );
+              },
+              leading: Image.asset(
+                'assets/icons/help.png',
+              ),
+              title: Text(
+              'Delete Account', 
               style: GoogleFonts.montserrat(
                 fontWeight: FontWeight.bold,
                ),

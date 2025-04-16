@@ -2,8 +2,9 @@ const express = require("express");
 const User = require('../models/user')
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
-
+const {auth} = require('../middleware/auth')
 const authRouter = express.Router();
+const Vendor = require('../models/vendor')
 const sendOTPEmail = require('../helpers/send_email');
 const crypto = require('crypto');
 
@@ -147,6 +148,35 @@ authRouter.get('/api/users', async (req,res) => {
         return res.status(200).json(users);
     }catch(e){
         res.status(500).json({error: e.message}); 
+    }
+})
+
+authRouter.delete('/api/user/delete-account/:id',auth, async (req,res) => {
+    try{
+
+        //Extract the ID from the request parameter
+        const {id} = req.params;
+
+        const user = await User.findById(id);
+        const vendor = await Vendor.findById(id);
+
+        if(!user && !vendor){
+            return res.status(404).json({msg: "user or vendor not found"})
+        }
+
+    // Delete the user o vendor based on their type
+
+    if(user){
+        await User.findByIdAndDelete(id);
+   
+    } else if(vendor){
+        await Vendor.findByIdAndDelete(id)
+    } 
+
+    return res.status(200).json({msg: "User deleted successfully"});
+
+    }catch(e){
+        return res.status({error:e.message});
     }
 })
 

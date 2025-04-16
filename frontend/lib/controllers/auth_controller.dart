@@ -51,7 +51,7 @@ class AuthController {
           MaterialPageRoute(builder: (context) {
           return OtpScreen(email:email);
           }
-          ));
+          ),);
       showSnackBar(context, 'Account has been created for you');
       });
     }catch(e){
@@ -218,4 +218,55 @@ class AuthController {
       showSnackBar(context, "Error veified OTP: $e");
     }
   }
+
+  Future<void> deleteAccount({
+    required BuildContext context, 
+    required String id, 
+    required WidgetRef ref //Access to the RiverPord Provider 
+    })async{
+      try{
+        //Get the authentication token from shared preferences from authorization
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        String? token = preferences.getString('auth_token');
+ 
+        if(token==null){
+          showSnackBar(context, "you need to log in perform this action");
+        }
+         http.Response response = await http.delete(Uri.parse('$uri/api/user/delete-account/$id'),
+         headers: <String, String>{
+        "Content-Type": "application/json; charset=UTF-8",
+        "x-auth-token": token!
+           }
+         ); 
+
+         manageHttpResponse(
+          response: response, 
+          context: context, 
+          onSuccess: ()async{
+            
+            //handle successful deletion, navigate the user back to the login screen
+
+            await preferences.remove('auth_token');
+
+            await preferences.remove('user');
+
+            ref.read(userProvider.notifier).signOut();
+
+           //Redirect to the login screen after successful deletion
+           
+           showSnackBar(context, "Account deleted Successfully");
+
+         Navigator.pushAndRemoveUntil(
+          context, 
+          MaterialPageRoute(
+            builder: (context){
+              return const LoginScreen();
+            }), 
+              (route) => false);
+          }
+        );
+      }catch(e){
+        showSnackBar(context, "error Deleting account $e");
+      }
+    }
 }
