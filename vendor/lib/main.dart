@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vendor/controllers/vendor_auth_controller.dart';
 import 'package:vendor/provider/vendor_provider.dart';
 import 'package:vendor/views/screens/authentication/login_screen.dart';
 import 'package:vendor/views/screens/main_vendor_screen.dart';
@@ -24,20 +25,13 @@ class MyApp extends ConsumerWidget {
 
   // This widget is the root of your application.
   @override
+  
+  @override
   Widget build(BuildContext context, WidgetRef ref) {
-    Future<void> checkTokenAndSetUser(WidgetRef ref)async{
-      // Obtain an instance of SharedPreferences
-      SharedPreferences preferences = await SharedPreferences.getInstance();
-      // retrive the authentication token and user data stored locally
-    String? token = preferences.getString('auth_token');
-    String? vendorJson = preferences.getString('vendor');
+    Future<void> checkTokenAndSetUser(WidgetRef ref,context) async {
+      await VendorAuthController().getUserData(context,ref);
 
-    // if both the token and data are available update the vendor state
-    if(token!=null && vendorJson!=null){
-      ref.read(vendorProvider.notifier).setVendor(vendorJson);
-    } else {
-      ref.read(vendorProvider.notifier).signOut();
-    }
+      ref.watch(vendorProvider);
     }
 
     return MaterialApp(
@@ -48,13 +42,15 @@ class MyApp extends ConsumerWidget {
         
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: FutureBuilder(future: checkTokenAndSetUser(ref), 
+      home: FutureBuilder(future: checkTokenAndSetUser(ref,context), 
       builder: (context, snapshot){
         if (snapshot.connectionState == ConnectionState.waiting){
           return Center(child: CircularProgressIndicator());
         } 
         final vendor = ref.watch(vendorProvider);
-        return vendor!=null? const MainVendorScreen(): const LoginScreen();
+        return vendor!.token.isNotEmpty
+        ? const MainVendorScreen()
+        : const LoginScreen();
       })
     );
   }

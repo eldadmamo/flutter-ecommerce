@@ -11,8 +11,10 @@ class Vendor {
   final String locality;
   final String role;
   final String password;
+  final String token;
 
-  Vendor({required this.id, required this.fullName, required this.email, required this.state, required this.city, required this.locality, required this.role, required this.password});
+  Vendor({required this.id, required this.fullName, required this.email, required this.state, required this.city, required this.locality, required this.role, required this.password, required this.token});
+
 
 
   Map<String, dynamic> toMap() {
@@ -25,15 +27,15 @@ class Vendor {
       'locality': locality,
       'role': role,
       'password': password,
+      'token': token,
     };
   }
-   //Converting to Json because the data will be sent to Json
-   String toJson() => json.encode(toMap());
 
-  //converting back to the vendor user Object so that we can make use f it within our application
+  String toJson() => json.encode(toMap());
+
   factory Vendor.fromMap(Map<String, dynamic> map) {
     return Vendor(
-      id: map['_id'] as String? ?? "",
+      id: map['id'] as String? ?? "",
       fullName: map['fullName'] as String? ?? "",
       email: map['email'] as String? ?? "",
       state: map['state'] as String? ?? "",
@@ -41,10 +43,11 @@ class Vendor {
       locality: map['locality'] as String? ?? "",
       role: map['role'] as String? ?? "",
       password: map['password'] as String? ?? "",
+      token: map['token'] as String? ?? "",
     );
   }
 
-  factory Vendor.fromJson(String source) =>
-      Vendor.fromMap(json.decode(source) as Map<String, dynamic>);
+  
 
+  factory Vendor.fromJson(String source) => Vendor.fromMap(json.decode(source) as Map<String, dynamic>);
 }

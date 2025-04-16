@@ -10,7 +10,8 @@ class VendorProvider extends StateNotifier<Vendor?> {
     city: '',
     locality: '', 
     role: '', 
-    password: ''
+    password: '', 
+    token: '',
   ));
 
   //Getter methnd to extract value from an object

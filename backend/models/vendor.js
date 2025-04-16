@@ -20,15 +20,15 @@ const mongoose = require('mongoose');
     },
     storeName:{
         type: String, 
-        required: true,
+        default: ""
     }, 
     storeImage: {
         type: String, 
-        required: true
+        default: ""
     },
     storeDescription: {
         type: String, 
-        required: true,
+        default: ""
     },
     state: {
         type: String,

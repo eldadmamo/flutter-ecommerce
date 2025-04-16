@@ -15,6 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final VendorAuthController _vendorAuthController = VendorAuthController();
   late String email;
   late String password; 
+  late String ref;
   bool isLoading = false;
 
   loginUser() async {
@@ -24,7 +25,8 @@ class _LoginScreenState extends State<LoginScreen> {
     await _vendorAuthController.signInVendor(
         context: context, 
         email: email, 
-        password: password,
+        password: password, 
+        ref: ref, 
     ).whenComplete((){
       _formKey.currentState!.reset();
       setState(() {
