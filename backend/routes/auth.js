@@ -15,6 +15,14 @@ authRouter.post('/api/signup', async (req,res) => {
     try{
         const {fullName, email, password} = req.body;
         
+        //check if the account has been created by a vendor before
+
+        const existingVendorEmail = await Vendor.findOne({email});
+
+        if(existingVendorEmail){
+            return res.status(400).json({msg: "account already own by a vendor"})
+        }
+
         const response = await User.findOne({email});
         if(response){
             return res.status(400).json({msg: "user with same email already exist"});
@@ -64,7 +72,10 @@ authRouter.post('/api/signin', async (req,res) => {
            if(!isMatch){
             return res.status(400).json({msg: "incorrect password"})
            } else {
-             const token = jwt.sign({id:findUser._id}, "passwordkey");
+
+            //set the token to expire in 1 minute
+
+             const token = jwt.sign({id:findUser._id}, "passwordKey", {expiresIn: '30m'});
 
              //remove sensitive information
              const {password, ...userWithoutPassword} = findUser._doc; 
@@ -75,6 +86,51 @@ authRouter.post('/api/signin', async (req,res) => {
         }
     }catch(e){
         res.status(500).json({error: e.message})
+    }
+})
+
+//check token validity
+authRouter.post('/tokenIsValid', async(req,res) => {
+    try{
+        const token = req.header("x-auth-token");
+        if(!token){
+            return res.json(false);
+        }
+        //verify the token
+      const verified = jwt.verify(token, 'passwordKey');
+      if(!verified){
+        return res.json(false);
+      }
+
+      //if verification failed(expired or invalid), jwt verify will thorw an error
+
+     const user = await User.findById(verified.id);
+
+    if(!user)
+        return res.json(false);
+
+    return res.json(true)
+
+    }catch(e){
+    // jwt.verify fails or any other errors occurs, return false
+
+    return res.status(500).json({error: e.message})
+
+    }
+})
+
+//Define a Get Route for the authentication router
+
+authRouter.get("/", auth, async (req,res) => {
+    try{
+        //retrive the user database using the id from the authenticated user
+        const user = await User.findById(req.user);
+
+        //send the user data as json response, including all the user document fields and the token
+
+       return res.json({...user._doc, token: req.token});
+    }catch(e){
+        return res.status(500).json({error:e.message});
     }
 })
 

@@ -24,8 +24,8 @@ Accept: application/json
 withCredentials: true
 
 {
-  "email": "eldadf456@gmail.com" ,
-  "password":"12345678"
+  "email": "eldadfikre456@gmail.com" ,
+  "password":"123456"
 }
 
 ###
@@ -62,4 +62,13 @@ GET {{baseUrl}}/{{urlPath}}/users
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
+
+
+###
+
+POST {{baseUrl}}/tokenIsValid
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+x-auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZmVmNTM5M2FmZjg3YzAzNDAwYmVhZSIsImlhdCI6MTc0NDgwNDY5NCwiZXhwIjoxNzQ0ODA0NzU0fQ.280YudcYV9iGVS8g8Rem4zK2coxH19alvjZbpmYnVZM
 
