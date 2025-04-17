@@ -62,4 +62,34 @@ Accept: application/json
 withCredentials: true
 
 
+###
+
+
+GET {{baseUrl}}/{{urlPath}}/products/vendor/67fd8d9a4237f0ce9ec2966c
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+
+
+PUT {{baseUrl}}/{{urlPath}}/edit-product/67fd8fe04237f0ce9ec296bb
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+x-auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZmQ4ZDlhNDIzN2YwY2U5ZWMyOTY2YyIsImlhdCI6MTc0NDkyMzcwMSwiZXhwIjoxNzQ0OTI2NzAxfQ.HC-RbRhAWrEXI47dCkSqoPgO-MDO8bgjZBJqURdnGTg
+
+{
+  "productName":"stylish cool dress", 
+  "productPrice": 400, 
+  "quantity":20, 
+  "description":"this is the finest cloths in paris best cloth", 
+  "category": "dress", 
+  "subCategory":"stylish dress",
+  "vendorId": "67fd8d9a4237f0ce9ec2966c",
+  "fullName": "abenezer",
+  "images": ["https://res.cloudinary.com/dggixttgq/image/upload/v1744670689/stylish%20cool%20dress/pzs9zgb01k8u7e8umdlq.jpg"]
+}
+
+
 

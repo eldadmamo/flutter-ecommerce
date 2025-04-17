@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vendor/controllers/vendor_auth_controller.dart';
 import 'package:vendor/views/screens/authentication/login_screen.dart';
 
-class RegisterScreen extends StatefulWidget {
+class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
 
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final VendorAuthController _vendorAuthController = VendorAuthController();
   late String email = '';
   late String fullName;
+ 
   late String password;
+
   bool _isLoading = false;
 
  registerUser() async {
@@ -27,6 +30,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         email: email, 
         fullName: fullName,
         password: password,
+        ref: ref 
     ).whenComplete((){
       _formKey.currentState!.reset();
       setState(() {

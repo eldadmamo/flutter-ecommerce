@@ -47,7 +47,7 @@ vendorRouter.post('/api/v2/vendor/signin', async (req,res) => {
            if(!isMatch){
             return res.status(400).json({msg: "incorrect password"})
            } else {
-             const token = jwt.sign({id:findUser._id}, "passwordkey",{expiresIn: '1m'});
+             const token = jwt.sign({id:findUser._id}, "passwordkey",{expiresIn: '50m'});
 
              //remove sensitive information
              const {password, ...vendorWithoutPassword} = findUser._doc; 
@@ -80,7 +80,6 @@ vendorRouter.post('/vendor-tokenIsValid', async(req,res) => {
     if(!vendor){
         return res.json(false);
     }
-        
 
     return res.json(true)
 
@@ -92,10 +91,9 @@ vendorRouter.post('/vendor-tokenIsValid', async(req,res) => {
     }
 })
 
-
 vendorRouter.get("/get-vendor", auth, async (req,res) => {
     try{
-        //retrive the user database using the id from the authenticated vendor
+        //retrive the vendor database using the id from the authenticated vendor
         const vendor = await Vendor.findById(req.user);
 
         //send the user data as json response, including all the user document fields and the token

@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vendor/controllers/vendor_auth_controller.dart';
+import 'package:vendor/provider/vendor_provider.dart';
 import 'package:vendor/views/screens/authentication/register_screen.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final VendorAuthController _vendorAuthController = VendorAuthController();
   late String email;
   late String password; 
-  late String ref;
+  
   bool isLoading = false;
 
   loginUser() async {
@@ -27,6 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
         email: email, 
         password: password, 
         ref: ref, 
+      
     ).whenComplete((){
       _formKey.currentState!.reset();
       setState(() {
@@ -37,6 +40,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final user = ref.read(vendorProvider);
+    
     return Scaffold(
       backgroundColor: Colors.white.withOpacity(0.95),
       body: Padding(

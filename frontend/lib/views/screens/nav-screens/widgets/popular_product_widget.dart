@@ -59,6 +59,6 @@ class _PopularProductWidgetState extends ConsumerState<PopularProductWidget> {
               final product = products[index];
               return ProductItemWidget(product: product);
             }),
-        );
+    );
   }
 }

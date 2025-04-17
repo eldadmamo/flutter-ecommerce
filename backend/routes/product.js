@@ -1,6 +1,7 @@
 const express = require("express");
 const Product = require('../models/product');
 const {auth,vendorAuth} = require('../middleware/auth');
+const Vendor = require('../models/vendor')
 
 const productRouter = express.Router();
 
@@ -150,33 +151,54 @@ productRouter.get('/api/search-products', async(req,res)=>{
     }
 })
 
-productRouter.put("/api/edit-product/:productId",auth, vendorAuth, async (req,res)=> {
+productRouter.put("/api/edit-product/:productId",auth,vendorAuth, async (req, res) => {
+    try {
+      const { productId } = req.params;
+      // Use findById() instead of find() to fetch the product by ID
+      const product = await Product.findById(productId);
+      
+      if (!product) {
+        return res.status(404).json({ msg: "Product not found" });
+      }
+      
+      if (product.vendorId.toString() !== req.user.id) {
+        return res.status(403).json({ msg: "Unauthorized to edit the product" });
+      }
+  
+      const { vendorId, ...updateData } = req.body;
+      
+      const updatedProduct = await Product.findByIdAndUpdate(
+        productId,
+        { $set: updateData },
+        { new: true }
+      );
+  
+      return res.status(200).json(updatedProduct);
+    } catch (e) {
+      return res.status(500).json({ error: e.message });
+    }
+  });
+
+
+productRouter.get('/api/products/vendor/:vendorId',auth,vendorAuth, async (req,res) => {
     try{
-        //Extract product Id from the request parameter
-        const {productId} = req.params;
-        const product = await Product.find(productId);
-        if(!product){
-            return res.status(404).json({msg: "Product not found"});
+        const {vendorId} = req.params;
+
+        //validate the vendor exist
+        const vendorExists = await Vendor.findById(vendorId);
+
+        if (!vendorExists){
+            return res.status(404).json({msg: "Vendor not found"})
         }
-        if(product.vendorId.toString()!== req.user.id){
-            return res.status(403).json({msg: "Unauthorized to edit the product"})
-        }
 
-        //Destructive req.body to exclude vendorId
+        //fetch products associated with the vendor Id
+        const products = await Product.find({vendorId});
 
-        const {vendorId, ...updateData} = req.body;
-        
-       const updateProduct = await Product.findByIdAndUpdate(
-            productId,
-            {$set: updateData}, //update only fields in the updateData
-            {new: true}
-        )
-
-        return res.status(200).json(updateProduct);
+        return res.status(200).json(products);
     }catch(e){
         return res.status(500).json({error: e.message});
     }
-})
+} )
 
 
 module.exports = productRouter;

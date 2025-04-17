@@ -17,7 +17,7 @@ class VendorProvider extends StateNotifier<Vendor?> {
   //Getter methnd to extract value from an object
   Vendor ? get vendor => state;
 
-  // Method to set vendor state from json
+  // Method to set vendor state from json   
 
   void setVendor(String vendorJson){
     state = Vendor.fromJson(vendorJson);

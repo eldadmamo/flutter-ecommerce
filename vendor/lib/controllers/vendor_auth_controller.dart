@@ -8,14 +8,16 @@ import 'package:vendor/provider/vendor_provider.dart';
 import 'package:vendor/services/manage_http_response.dart';
 import 'package:vendor/views/global_variables.dart';
 import 'package:vendor/views/screens/main_vendor_screen.dart';
-
+import 'package:vendor/views/screens/authentication/login_screen.dart';
 
 final providerContainer =  ProviderContainer();
 class VendorAuthController {
+  
   Future<void> signUpVendor({
     required fullName,
     required String email,
     required String password, 
+    required WidgetRef ref,
     required context
   })async {
     try{
@@ -33,8 +35,18 @@ class VendorAuthController {
         });
 
       // 
-      manageHttpResponse(response: response, context: context, 
+      manageHttpResponse(
+      response: response, 
+      context: context, 
       onSuccess: (){
+        final vendorJson = jsonEncode(jsonDecode(response.body));
+
+        ref.watch(vendorProvider.notifier).setVendor(vendorJson);
+
+        Navigator.pushAndRemoveUntil(context, 
+        MaterialPageRoute(builder: (context){
+          return const LoginScreen();
+        }), (route) => false);
         showSnackBar(context, 'Vendor Account Created');
       });
     }catch(e){
@@ -48,6 +60,7 @@ class VendorAuthController {
     required String email,
     required String password,
     required context , 
+    required WidgetRef ref
   })async{
     try{
 
@@ -57,44 +70,43 @@ class VendorAuthController {
         "Content-Type": "application/json; charset-UTF=8"
         }
       );
+      print(response.body);
       
-      manageHttpResponse(response: response, context: context, 
-      onSuccess: () async{
-       //Access sharedPreferances for token and user data storage
-          SharedPreferences preferences = 
-            await SharedPreferences.getInstance();
-          
-           //Extract the authentication token from the response body
-           String token = jsonDecode(response.body)['token'];
+      manageHttpResponse(
+  response: response, 
+  context: context, 
+  onSuccess: () async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    final responseBody = jsonDecode(response.body);
+    
+    // Extract token and vendor data separately
+    String token = responseBody['token'];
+    var vendorData = responseBody['vendorWithoutPassword'];
+    
+    // Combine vendor data with token
+    vendorData['token'] = token;
+    final vendorJson = jsonEncode(vendorData);
 
-           //Store the authentication token securely in SharedPreferances
-          preferences.setString('auth_token', token);
+    ref.read(vendorProvider.notifier).setVendor(vendorJson);
+    await preferences.setString('vendor', vendorJson);
+    await preferences.setString('auth_token', token);
 
-           //Encode user data recieved from backend as json
-           final userJson = jsonEncode(jsonDecode(response.body));
-
-           //update the application state with the user data using riverpod
-           ref.read(vendorProvider.notifier).setVendor(response.body);
-           
-           // store the data in sharedPreferences
-           await preferences.setString('user', userJson);
-
-          if(ref.read(vendorProvider)!.token.isNotEmpty){
-          Navigator.pushAndRemoveUntil(
-          context, 
-          MaterialPageRoute(builder: (context) {
-           return const MainVendorScreen();
-          }), 
-          (route) => false);
-           showSnackBar(context, 'Logged In');
-          }
-      });
+    if(token.isNotEmpty) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const MainVendorScreen()),
+        (route) => false
+      );
+      showSnackBar(context, 'Logged In Successfully');
+    }
+  }
+);
     }catch(e){
       showSnackBar(context, '$e');
     }
   }
 
-  getUserData(context , WidgetRef ref) async{
+  getUserData(BuildContext context, WidgetRef ref) async{
     try{
       SharedPreferences preferences = await SharedPreferences.getInstance();
       String? token = preferences.getString('auth_token');
@@ -125,8 +137,6 @@ class VendorAuthController {
  
       ref.read(vendorProvider.notifier).setVendor(userResponse.body);
       }
-
-      
     }catch(e){
       showSnackBar(context, e.toString());
     }
