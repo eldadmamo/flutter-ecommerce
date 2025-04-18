@@ -12,8 +12,22 @@ class Vendor {
   final String role;
   final String password;
   final String token;
+  final String? storeImage; 
+  final String? storeDescription;
 
-  Vendor({required this.id, required this.fullName, required this.email, required this.state, required this.city, required this.locality, required this.role, required this.password, required this.token});
+  Vendor({
+    required this.id, 
+    required this.fullName, 
+    required this.email, 
+    required this.state, 
+    required this.city, 
+    required this.locality, 
+    required this.role, 
+    required this.password, 
+    required this.token, 
+    this.storeImage, 
+    this.storeDescription
+    });
 
 
 
@@ -28,6 +42,8 @@ class Vendor {
       'role': role,
       'password': password,
       'token': token,
+      'storeImage':storeImage,
+      'storeDescription': storeDescription
     };
   }
 
@@ -44,6 +60,8 @@ class Vendor {
       role: map['role'] as String? ?? "",
       password: map['password'] as String? ?? "",
       token: map['token'] as String? ?? "",
+      storeImage: map['storeImage'] as String ? ?? "", 
+      storeDescription: map['storeDescription'] as String ? ?? ""
     );
   }
 

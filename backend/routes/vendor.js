@@ -114,4 +114,26 @@ vendorRouter.get('/api/vendors', async (req,res)=> {
         res.status(500).json({error: e.message});
     }
 })
+
+vendorRouter.put('/api/vendor/:id', async (req,res)=> {
+    try{
+        const {id} = req.params;
+        const {storeImage, storeDescription} = req.body;
+
+        const updateUser = await Vendor.findByIdAndUpdate(
+            id, 
+            {storeImage, storeDescription},
+            {new: true}
+        ); 
+
+        if(!updateUser){
+            return res.status(404).json({error: "Vendor not found"})
+        }
+        return res.status(200).json(updateUser);
+        
+    }catch(e){
+        res.status(500).json({error: e.message})
+    }
+})
+
 module.exports = vendorRouter;

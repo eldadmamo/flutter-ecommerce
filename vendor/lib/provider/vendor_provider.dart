@@ -12,6 +12,8 @@ class VendorProvider extends StateNotifier<Vendor?> {
     role: '', 
     password: '', 
     token: '',
+    storeImage: '',
+    storeDescription: ''
   ));
 
   //Getter methnd to extract value from an object
