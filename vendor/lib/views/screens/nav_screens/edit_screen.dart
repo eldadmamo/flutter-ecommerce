@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:vendor/controllers/product_controller.dart';
 import 'package:vendor/provider/vendor_product_provider.dart';
 import 'package:vendor/provider/vendor_provider.dart';
@@ -47,30 +48,107 @@ class _EditScreenState extends ConsumerState<EditScreen> {
   @override
   Widget build(BuildContext context) {
     final products = ref.watch(vendorProductProvider);
-    return SizedBox(
-          height: 250,
+    return Scaffold(
+        appBar: PreferredSize(preferredSize: Size.fromHeight(
+          MediaQuery.of(context).size.height * 0.20), 
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: 118, 
+          clipBehavior: Clip.hardEdge,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                'assets/icons/cartb.png'
+            ), 
+            fit: BoxFit.cover
+            )
+          ),
+          child: Stack(
+            children: [
+              Positioned(
+                left: 322, 
+                top: 52, 
+                child: Stack(
+                  children: [
+                    Image.asset('assets/icons/not.png', 
+                    width: 25,
+                    height: 25,
+                    ),
+                    Positioned(
+                      top: 0, 
+                      right: 0, 
+                      child: Container(
+                        width: 20, 
+                        height: 20, 
+                        padding: const EdgeInsets.all(4), 
+                        decoration: BoxDecoration(
+                          color: Colors.yellow.shade800,
+                          borderRadius: BorderRadius.circular(12)
+                        ),
+                        child: Center(
+                          child: Text(
+                            products.length.toString(),
+                            style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 11
+                          ),),
+                        ),
+                      )
+                    )
+                  ],
+                )
+              ),
+              Positioned(
+                left: 61,
+                top: 51,
+                child: Text(
+                  'Edit Product', 
+                  style: GoogleFonts.montserrat(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600 ,
+                  color: Colors.white
+                ),)
+                )
+            ],
+          ),
+        )
+        ),
+      body: isLoading ? 
+      Center(
+        child: CircularProgressIndicator(
+          color: Colors.blue,)
+        ):
+      ListView.builder(
+        shrinkWrap: true, 
+        scrollDirection: Axis.vertical,
+        itemCount: products.length,
+        itemBuilder: (context, index){
+          final product = products[index];
+          return InkWell( 
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context){
+                return EditProductDetailScreen(product: product);
+              }));
+            },
+            child: ListTile(
+              leading: Image.network(product.images[0], 
+              width: 100, 
+              height: 100,
+              ),
+              title: Text(product.productName ,
+              style: GoogleFonts.montserrat(
+                fontWeight: FontWeight.bold
+              ),
+              ),
+              subtitle: Text(product.category),
+              trailing: Text(
+                "\$${product.productPrice.toString()}", 
 
-          child: isLoading ? 
-          Center(
-            child: CircularProgressIndicator(
-              color: Colors.blue,)
-            ):
-          ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: products.length,
-            itemBuilder: (context, index){
-              final product = products[index];
-              return InkWell( 
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context){
-                    return EditProductDetailScreen(product: product);
-                  }));
-                },
-                child: Center(
-                  child: Text(product.productName),
-                ),
-              );
-            }),
+              ),
+            )
+          );
+        }),
     );
   }
 }
