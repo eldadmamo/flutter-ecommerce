@@ -177,4 +177,32 @@ class ProductController {
       throw Exception('Error loading searched Products $e');
     }
    }
+
+    Future<List<Product>> loadVendorProducts(String vendorId) async{
+    try{
+      http.Response response =  await http.get(
+      Uri.parse('$uri/api/products/vendor/$vendorId'),
+      headers: <String, String> {
+        "Content-Type":"application/json; charset=UTF-8"
+      });
+
+      print(response.body);
+
+      if(response.statusCode==200){
+     final List<dynamic> data = json.decode(response.body) as List<dynamic>;
+
+    List<Product> vendorProducts =  data
+    .map((product) => Product.fromMap(product as Map<String,dynamic>))
+    .toList();
+    return vendorProducts;
+
+    } else if(response.statusCode == 404){
+      return [];
+    } else {
+      throw Exception('Failed to load vendors products');
+    }
+    }catch(e){
+      throw Exception('Error vendors products $e');
+    }
+   }
 }

@@ -73,7 +73,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             Positioned(
               left: 61,
               top: 51,
-              child: Text('My Cart', style: GoogleFonts.lato(
+              child: Text(
+                'My Cart', 
+                style: GoogleFonts.lato(
                 fontSize: 18,
                 fontWeight: FontWeight.w600 ,
                 color: Colors.white

@@ -105,15 +105,7 @@ vendorRouter.get("/get-vendor", auth, async (req,res) => {
 })
 
 
-//Fetch all vendors(exclude password)
-vendorRouter.get('/api/vendors', async (req,res)=> {
-    try{
-        const vendors = await Vendor.find().select('-password');
-        return res.status(200).json(vendors);
-    }catch(e){
-        res.status(500).json({error: e.message});
-    }
-})
+
 
 vendorRouter.put('/api/vendor/:id', async (req,res)=> {
     try{
@@ -133,6 +125,15 @@ vendorRouter.put('/api/vendor/:id', async (req,res)=> {
         
     }catch(e){
         res.status(500).json({error: e.message})
+    }
+});
+
+vendorRouter.get('/api/vendors', async (req,res) => {
+    try{
+        const vendors = await Vendor.find().select('-password');
+        return res.status(200).json(vendors);
+    }catch(e){
+        res.status(500).json({error: e.message}); 
     }
 })
 

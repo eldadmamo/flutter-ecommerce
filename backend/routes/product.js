@@ -180,7 +180,7 @@ productRouter.put("/api/edit-product/:productId",auth,vendorAuth, async (req, re
   });
 
 
-productRouter.get('/api/products/vendor/:vendorId',auth,vendorAuth, async (req,res) => {
+productRouter.get('/api/products/vendor/:vendorId', async (req,res) => {
     try{
         const {vendorId} = req.params;
 
